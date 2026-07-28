@@ -344,7 +344,7 @@ body.dark-mode .site-shell:has(.home-figma-cover) .topbar.is-nav-scrolled .nav-l
 .home-figma-cover p {
   left: 37.3958vw;
   top: 48.2407%;
-  font-family: "RTWS JyunYa Demo", "Songti SC", STSong, SimSun, serif;
+  font-family: "RTWS JyunYa Demo", "Noto Serif SC", "Songti SC", STSong, SimSun, serif;
   font-size: clamp(32px, 2.8646vw, 55px);
   font-weight: 400;
   letter-spacing: 0.9167vw;
@@ -593,7 +593,7 @@ body:has(.home-intro-sequence)::before {
   flex-direction: column;
   gap: 12px;
   margin: 18px 0 0;
-  font-family: "RTWS JyunYa Demo", "Songti SC", STSong, SimSun, serif;
+  font-family: "RTWS JyunYa Demo", "Noto Serif SC", "Songti SC", STSong, SimSun, serif;
   font-size: clamp(52px, 5.8vw, 112px);
   line-height: 1.22;
   font-weight: 400;

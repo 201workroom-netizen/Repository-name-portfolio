@@ -4036,7 +4036,7 @@ body.ai-detail-mode .reveal.visible {
 .home-figma-cover p {
   left: 37.3958%;
   top: 52.1296%;
-  font-family: "RTWS JyunYa Demo", "Songti SC", STSong, SimSun, serif;
+  font-family: "RTWS JyunYa Demo", "Noto Serif SC", "Songti SC", STSong, SimSun, serif;
   font-size: clamp(32px, 2.8646vw, 55px);
   font-weight: 400;
   letter-spacing: 0.9167vw;
@@ -4113,7 +4113,7 @@ body.ai-detail-mode .reveal.visible {
 .home-figma-cover p {
   left: 37.3958%;
   top: 52.1296%;
-  font-family: "RTWS JyunYa Demo", "Songti SC", STSong, SimSun, serif;
+  font-family: "RTWS JyunYa Demo", "Noto Serif SC", "Songti SC", STSong, SimSun, serif;
   font-size: clamp(32px, 2.8646vw, 55px);
   letter-spacing: 0.9167vw;
 }
