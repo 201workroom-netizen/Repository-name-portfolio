@@ -1859,8 +1859,8 @@ body.ai-detail-mode .reveal.visible {
 /* ─── 3D Visual Stage ─── */
 .meituan-hero-visual {
   flex: 0 0 auto;
-  width: clamp(280px, 38vw, 560px);
-  height: clamp(280px, 38vw, 560px);
+  width: clamp(420px, 52vw, 840px);
+  aspect-ratio: 16 / 9;
   position: relative;
   display: flex;
   align-items: center;
@@ -1887,8 +1887,8 @@ body.ai-detail-mode .reveal.visible {
     max-width: 560px;
   }
   .meituan-hero-visual {
-    width: 260px;
-    height: 260px;
+    width: min(92vw, 640px);
+    aspect-ratio: 16 / 9;
   }
 }
 
