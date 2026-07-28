@@ -410,7 +410,7 @@ function meituanHeroSection() {
           <p class="meituan-hero-en">Meituan is a strong trading platform. Compared with content-based live broadcast platforms, Meituan attracts users whose stay time is relatively limited. Therefore, expanding the scale of live broadcast DAU and increasing the viewing/interaction time of fans is one of the important goals of live broadcast products at the end of 2024.</p>
         </div>
         <div class="meituan-hero-visual" aria-hidden="true">
-          <img class="meituan-hero-3d" src="./assets/meituan-hero-3d-bg.jpg" alt="美团直播 3D 视觉元素" />
+          <img class="meituan-hero-3d" src="./assets/meituan-hero-3d-bg-v2.jpg" alt="美团直播 3D 视觉元素" />
         </div>
       </div>
     </section>
