@@ -715,7 +715,7 @@ function aiSearchDetailPage() {
         </header>
         <div class="demo-phone-stage reveal" style="--delay:100ms">
           <div class="demo-phone-frame demo-phone-frame--image">
-            <img src="./assets/ai-phone-commerce-v2.png" alt="AI 电商搜索交互 Demo" loading="lazy" />
+            <img src="./assets/ai-phone-commerce-v2.png" alt="AI 电商搜索交互 Demo" loading="eager" />
           </div>
         </div>
       </section>
