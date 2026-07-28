@@ -61,8 +61,8 @@ body:has(.home-intro-sequence) {
 
 .site-shell:has(.home-figma-cover) .nav-links {
   --nav-active-alpha: var(--nav-progress, 0);
-  --nav-border-alpha: calc(var(--nav-progress, 0) * 0.88);
-  --nav-bg-alpha: calc(var(--nav-progress, 0) * 0.4);
+  --nav-border-alpha: calc(var(--nav-progress, 0) * 0.64);
+  --nav-bg-alpha: calc(var(--nav-progress, 0) * 0.24);
   --nav-shadow-alpha: calc(var(--nav-progress, 0) * 0.1);
   display: flex;
   align-items: center;
@@ -73,7 +73,7 @@ body:has(.home-intro-sequence) {
   padding: var(--nav-pad-y, 6.6667px) var(--nav-pad-x, 36.6667px);
   border: 1px solid rgba(224, 224, 224, var(--nav-border-alpha));
   border-radius: clamp(16px, var(--nav-radius, 0px), 999px);
-  background: rgba(186, 186, 186, var(--nav-bg-alpha));
+  background: rgba(255, 255, 255, var(--nav-bg-alpha));
   box-shadow: 0 12px 34px rgba(28, 27, 24, var(--nav-shadow-alpha)), inset 0 1px rgba(255, 255, 255, calc(var(--nav-progress, 0) * 0.72));
   -webkit-backdrop-filter: blur(20.3px);
   backdrop-filter: blur(20.3px);
@@ -87,12 +87,20 @@ body:has(.home-intro-sequence) {
 .site-shell:has(.home-figma-cover) .topbar.is-nav-scrolled .nav-links {
   border-radius: var(--nav-radius, 999px);
   border-color: rgba(255, 255, 255, 0.72);
-  background-color: rgba(33, 29, 29, 0.2);
+  background-color: rgba(255, 255, 255, 0.32);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.84),
     0 5px 8px rgba(17, 20, 25, 0.07);
   backdrop-filter: blur(20.3px);
   -webkit-backdrop-filter: blur(20.3px);
+}
+
+.site-shell:has(.home-figma-cover) .topbar:not(.is-nav-scrolled) .nav-links {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .site-shell:has(.home-figma-cover) .nav-links a {

@@ -715,7 +715,7 @@ function aiSearchDetailPage() {
         </header>
         <div class="demo-phone-stage reveal" style="--delay:100ms">
           <div class="demo-phone-frame">
-            <iframe src="./ecommerce-demo/" title="AI 电商搜索交互 Demo" loading="lazy"></iframe>
+            <iframe src="./ecommerce-demo/index.html" title="AI 电商搜索交互 Demo" loading="eager"></iframe>
           </div>
         </div>
       </section>
@@ -1249,8 +1249,30 @@ function setupDemoStory() {
     event.preventDefault();
     advance(direction);
   }, { signal });
-  frame.addEventListener("load", () => frame.contentWindow?.postMessage({ type: "demo-step", step: 0 }, "*"), { signal });
+  frame.addEventListener("load", () => {
+    // Always enter the embedded demo at its complete top-of-flow state.
+    // The demo has an internal results scroller; preserving a previous scroll
+    // position can make the first visible screen look like content is missing.
+    try {
+      frame.contentDocument?.querySelectorAll("[data-scroll], .content-scroll, main, body")
+        .forEach((node) => { node.scrollTop = 0; });
+    } catch (error) {
+      // Keep the iframe usable if a future hosted version becomes cross-origin.
+    }
+    frame.contentWindow?.postMessage({ type: "demo-step", step: 0 }, "*");
+  }, { signal });
   updateLock();
+}
+
+function setupDemoFramePosition() {
+  const frame = document.querySelector(".ai-case-demo iframe");
+  if (!frame) return;
+  frame.addEventListener("load", () => {
+    try {
+      frame.contentDocument?.querySelectorAll("[data-scroll], .content-scroll, main, body")
+        .forEach((node) => { node.scrollTop = 0; });
+    } catch (error) {}
+  }, { once: true });
 }
 let homeNavMotionController = null;
 
@@ -1478,6 +1500,7 @@ function render() {
     app.innerHTML = detailPage(projectId);
     window.scrollTo(0, 0);
     setupOpeningReveal();
+    setupDemoFramePosition();
     if (section) setupProjectSectionNav(section);
     setActiveNav("work");
   } else {
