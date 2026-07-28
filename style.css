@@ -1814,18 +1814,18 @@ body.ai-detail-mode .reveal.visible {
   align-items: center;
   justify-content: center;
   min-height: min(calc(100vh - 48px), 1080px);
-  background: #0a0a0a;
+  background: #0a0a0a url('./assets/meituan-hero-3d-bg-v2.jpg') center / cover no-repeat;
   border-color: rgba(255, 255, 255, 0.1);
 }
 
 .meituan-hero-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: clamp(40px, 6vw, 120px);
+  justify-content: flex-start;
   width: 100%;
   max-width: 1520px;
   margin: 0 auto;
+  padding: 0 clamp(32px, 5vw, 100px);
 }
 
 .meituan-hero-copy {
@@ -1856,39 +1856,17 @@ body.ai-detail-mode .reveal.visible {
   color: rgba(255, 255, 255, 0.42);
 }
 
-/* ─── 3D Visual Stage ─── */
-.meituan-hero-visual {
-  flex: 0 0 auto;
-  width: clamp(420px, 52vw, 840px);
-  aspect-ratio: 16 / 9;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.meituan-hero-3d {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 0;
-}
-
 /* Responsive */
 @media (max-width: 900px) {
   .meituan-hero-inner {
     flex-direction: column;
     text-align: center;
-    gap: 48px;
     padding-top: 40px;
+    justify-content: center;
   }
   .meituan-hero-copy {
     flex: 0 1 auto;
     max-width: 560px;
-  }
-  .meituan-hero-visual {
-    width: min(92vw, 640px);
-    aspect-ratio: 16 / 9;
   }
 }
 
