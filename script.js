@@ -714,8 +714,8 @@ function aiSearchDetailPage() {
           <h2>电商DEMO展示</h2>
         </header>
         <div class="demo-phone-stage reveal" style="--delay:100ms">
-          <div class="demo-phone-frame">
-            <iframe src="http://127.0.0.1:5174/" title="AI 电商搜索交互 Demo" loading="lazy"></iframe>
+          <div class="demo-phone-frame demo-phone-frame--image">
+            <img src="./assets/ai-phone-commerce-v2.png" alt="AI 电商搜索交互 Demo" loading="lazy" />
           </div>
         </div>
       </section>
