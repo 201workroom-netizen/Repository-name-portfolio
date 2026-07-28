@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Recorder</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #f3f4f4;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      canvas {
+        width: 430px;
+        height: 930px;
+        box-shadow: 0 20px 60px rgba(24, 26, 36, 0.18);
+      }
+
+      #result {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="stage" width="430" height="930"></canvas>
+    <textarea id="result"></textarea>
+    <script>
+      async function recordDemo() {
+        const width = 430;
+        const height = 930;
+        const fps = 15;
+        const frameCount = 105;
+        const canvas = document.getElementById("stage");
+        const context = canvas.getContext("2d");
+        const stream = canvas.captureStream(fps);
+        const wantsMp4 = new URLSearchParams(location.search).get("format") === "mp4";
+        const candidates = wantsMp4
+          ? ["video/mp4;codecs=avc1.42E01E", "video/mp4", "video/webm;codecs=vp9", "video/webm;codecs=vp8"]
+          : ["video/webm;codecs=vp9", "video/webm;codecs=vp8"];
+        const mimeType = candidates.find((candidate) => MediaRecorder.isTypeSupported(candidate));
+        if (!mimeType) {
+          throw new Error("No supported MediaRecorder video format");
+        }
+        const recorder = new MediaRecorder(stream, {
+          mimeType,
+          videoBitsPerSecond: 4_000_000,
+        });
+        const chunks = [];
+
+        recorder.ondataavailable = (event) => {
+          if (event.data.size > 0) chunks.push(event.data);
+        };
+
+        const done = new Promise((resolve) => {
+          recorder.onstop = resolve;
+        });
+
+        recorder.start();
+
+        for (let index = 0; index < frameCount; index += 1) {
+          const image = new Image();
+          image.decoding = "sync";
+          image.src = `/video-frames/frame_${String(index).padStart(4, "0")}.png`;
+          await image.decode();
+          context.clearRect(0, 0, width, height);
+          context.drawImage(image, 0, 0, width, height);
+          await new Promise((resolve) => setTimeout(resolve, 1000 / fps));
+        }
+
+        recorder.stop();
+        await done;
+
+        const blob = new Blob(chunks, { type: mimeType });
+        const dataUrl = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        });
+        document.getElementById("result").value = dataUrl;
+        document.body.dataset.ready = "true";
+      }
+
+      window.addEventListener("load", () => {
+        recordDemo().catch((error) => {
+          document.body.dataset.ready = "error";
+          document.getElementById("result").value = String(error && error.stack ? error.stack : error);
+        });
+      });
+    </script>
+  </body>
+</html>
