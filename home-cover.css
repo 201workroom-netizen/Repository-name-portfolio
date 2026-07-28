@@ -1,0 +1,822 @@
+/* Figma 128:9470 — homepage cover only. */
+html:has(.home-intro-sequence),
+body:has(.home-intro-sequence) {
+  overflow-x: clip;
+}
+
+.site-shell:has(.home-figma-cover) .topbar {
+  position: fixed;
+  top: var(--nav-top, 16px);
+  left: 50%;
+  z-index: 100;
+  width: var(--nav-width, 100vw);
+  max-width: none;
+  height: var(--nav-height, 56px);
+  padding: 0;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate3d(-50%, 0, 0);
+  transform-origin: center;
+  transition:
+    width 520ms cubic-bezier(0.16, 1, 0.3, 1),
+    top 520ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: width, transform, top;
+}
+
+.site-shell:has(.home-figma-cover) .topbar.nav-motion {
+  opacity: 0;
+  filter: blur(10px);
+  transform: translate3d(-50%, -18px, 0) scale(0.992);
+  transition:
+    opacity 720ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 820ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 720ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity, filter;
+}
+
+.site-shell:has(.home-figma-cover) .topbar.nav-motion.is-nav-ready {
+  opacity: 1;
+  filter: blur(0);
+  transform: translate3d(-50%, 0, 0) scale(1);
+  transition:
+    width 640ms cubic-bezier(0.16, 1, 0.3, 1),
+    top 640ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-shell:has(.home-figma-cover) .topbar.nav-motion.is-nav-hidden {
+  opacity: 1;
+  pointer-events: auto;
+  filter: blur(0);
+  transform: translate3d(-50%, 0, 0) scale(1);
+}
+
+.site-shell:has(.home-figma-cover) .topbar.is-nav-scrolled {
+  top: var(--nav-top, 10px);
+  width: var(--nav-width, min(376px, calc(100% - 24px)));
+}
+
+.site-shell:has(.home-figma-cover) .nav-links {
+  --nav-active-alpha: var(--nav-progress, 0);
+  --nav-border-alpha: calc(var(--nav-progress, 0) * 0.88);
+  --nav-bg-alpha: calc(var(--nav-progress, 0) * 0.4);
+  --nav-shadow-alpha: calc(var(--nav-progress, 0) * 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: var(--nav-height, 56px);
+  gap: var(--nav-gap, 22px);
+  padding: var(--nav-pad-y, 6.6667px) var(--nav-pad-x, 36.6667px);
+  border: 1px solid rgba(224, 224, 224, var(--nav-border-alpha));
+  border-radius: clamp(16px, var(--nav-radius, 0px), 999px);
+  background: rgba(186, 186, 186, var(--nav-bg-alpha));
+  box-shadow: 0 12px 34px rgba(28, 27, 24, var(--nav-shadow-alpha)), inset 0 1px rgba(255, 255, 255, calc(var(--nav-progress, 0) * 0.72));
+  -webkit-backdrop-filter: blur(20.3px);
+  backdrop-filter: blur(20.3px);
+  transition:
+    border-radius 520ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 420ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 420ms ease,
+    box-shadow 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site-shell:has(.home-figma-cover) .topbar.is-nav-scrolled .nav-links {
+  border-radius: var(--nav-radius, 999px);
+  border-color: rgba(255, 255, 255, 0.72);
+  background-color: rgba(33, 29, 29, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.84),
+    0 5px 8px rgba(17, 20, 25, 0.07);
+  backdrop-filter: blur(20.3px);
+  -webkit-backdrop-filter: blur(20.3px);
+}
+
+.site-shell:has(.home-figma-cover) .nav-links a {
+  --nav-link-color: #727272;
+  position: relative;
+  display: grid;
+  width: var(--nav-item-width, 69.3333px);
+  height: var(--nav-link-height, 42.6667px);
+  flex: 0 0 var(--nav-item-width, 69.3333px);
+  place-items: center;
+  padding: 0;
+  border-radius: 999px;
+  overflow: hidden;
+  color: transparent;
+  background: transparent;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: var(--nav-font-size, 20px);
+  line-height: 1;
+  font-weight: 300;
+  letter-spacing: 0;
+  text-align: center;
+  white-space: nowrap;
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    color 220ms ease,
+    background-color 260ms ease,
+    opacity 320ms ease,
+    translate 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: translate, opacity;
+}
+
+.site-shell:has(.home-figma-cover) .nav-links a::before,
+.site-shell:has(.home-figma-cover) .nav-links a::after {
+  content: attr(data-label);
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--nav-link-color);
+  font: inherit;
+  letter-spacing: inherit;
+  pointer-events: none;
+  transition:
+    color 260ms ease,
+    transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.site-shell:has(.home-figma-cover) .nav-links a::after {
+  transform: translateY(110%);
+}
+
+.site-shell:has(.home-figma-cover) .topbar.nav-motion:not(.is-nav-ready) .nav-links a {
+  opacity: 0;
+  translate: 0 8px;
+}
+
+.site-shell:has(.home-figma-cover) .topbar.nav-motion.is-nav-ready .nav-links a {
+  transition-delay: calc(var(--nav-index, 0) * 45ms);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-shell:has(.home-figma-cover) .nav-links a:not(.is-active):hover {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+.site-shell:has(.home-figma-cover) .nav-links a.is-active {
+  --nav-link-color: var(--nav-active-color, #000);
+  width: var(--nav-item-width, 104px);
+  height: var(--nav-link-height, 64px);
+  margin: 0;
+  border-radius: 999px;
+  color: transparent;
+  background: rgba(0, 0, 0, var(--nav-active-alpha));
+  font-weight: 700;
+  line-height: 1;
+}
+
+.site-shell:has(.home-figma-cover) .topbar:not(.is-nav-scrolled) .nav-links a.is-active {
+  --nav-active-color: #2e2e2e;
+  font-weight: 700;
+}
+
+.site-shell:has(.home-figma-cover) .topbar.is-nav-scrolled .nav-links a.is-active {
+  --nav-active-color: #fff;
+}
+
+body.dark-mode .site-shell:has(.home-figma-cover) .nav-links a {
+  --nav-link-color: #727272;
+  color: transparent;
+}
+
+body.dark-mode .site-shell:has(.home-figma-cover) .nav-links a.is-active {
+  --nav-link-color: #fff;
+  color: transparent;
+  background: #000;
+}
+
+body.dark-mode .site-shell:has(.home-figma-cover) .topbar:not(.is-nav-scrolled) .nav-links a.is-active {
+  --nav-link-color: #2e2e2e;
+  background: transparent;
+}
+
+.site-shell:has(.home-figma-cover) .topbar.is-over-dark .nav-links {
+  border-color: rgba(255, 255, 255, calc(0.18 + var(--nav-progress, 0) * 0.18));
+  background: rgba(186, 186, 186, calc(var(--nav-progress, 0) * 0.4));
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(20.3px);
+  -webkit-backdrop-filter: blur(20.3px);
+}
+
+.site-shell:has(.home-figma-cover) .topbar.is-over-dark.is-nav-scrolled .nav-links {
+  border-color: rgba(255, 255, 255, 0.34);
+  background-color: rgba(52, 52, 52, 0.52);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 5px 8px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(20.3px);
+  -webkit-backdrop-filter: blur(20.3px);
+}
+
+.site-shell:has(.home-figma-cover) .topbar.is-over-dark .nav-links a {
+  --nav-link-color: rgba(255, 255, 255, 0.74);
+}
+
+.site-shell:has(.home-figma-cover) .topbar.is-over-dark .nav-links a.is-active {
+  --nav-link-color: #fff;
+}
+
+body.dark-mode .site-shell:has(.home-figma-cover) .nav-links {
+  border-color: rgba(255, 255, 255, calc(0.18 + var(--nav-progress, 0) * 0.18));
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20.3px);
+  -webkit-backdrop-filter: blur(20.3px);
+}
+
+body.dark-mode .site-shell:has(.home-figma-cover) .topbar.is-nav-scrolled .nav-links {
+  border-color: rgba(255, 255, 255, 0.34);
+  background-color: rgba(255, 255, 255, 0.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 5px 8px rgba(0, 0, 0, 0.2);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-shell:has(.home-figma-cover) .nav-links {
+    background-color: rgba(255, 255, 255, 0.88);
+  }
+
+  .site-shell:has(.home-figma-cover) .topbar.is-nav-scrolled .nav-links {
+    background-color: rgba(255, 255, 255, 0.86);
+  }
+
+  .site-shell:has(.home-figma-cover) .topbar.is-over-dark .nav-links {
+    background-color: rgba(28, 28, 30, 0.78);
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+
+  .site-shell:has(.home-figma-cover) .topbar.is-over-dark.is-nav-scrolled .nav-links {
+    background-color: rgba(28, 28, 30, 0.84);
+  }
+
+  body.dark-mode .site-shell:has(.home-figma-cover) .nav-links {
+    background-color: rgba(28, 28, 30, 0.78);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  body.dark-mode .site-shell:has(.home-figma-cover) .topbar.is-nav-scrolled .nav-links {
+    background-color: rgba(28, 28, 30, 0.84);
+  }
+}
+
+.home-intro-sequence {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  background-color: #fefefe;
+  background-image: radial-gradient(circle at 1px 1px, rgba(61, 65, 68, 0.15) 0.85px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.home-static-redesign {
+  position: relative;
+  z-index: 1;
+  width: 100vw;
+  min-height: 100svh;
+  height: 100svh;
+  overflow: hidden;
+  color: #000;
+  background: #fefefe;
+}
+
+.home-static-redesign::before {
+  display: none;
+}
+
+.home-figma-cover {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  color: #000;
+  background: #fefefe;
+  white-space: nowrap;
+  opacity: var(--cover-fade, 1);
+  transform: translateY(var(--cover-lift, 0px));
+  will-change: opacity, transform;
+}
+
+.home-figma-cover h1,
+.home-figma-cover p {
+  position: absolute;
+  margin: 0;
+  color: #000;
+  line-height: normal;
+}
+
+.home-figma-cover h1 {
+  left: 20.8333vw;
+  top: 30.9259%;
+  font-family: "Playfair Display", Didot, "Bodoni 72", Baskerville, Georgia, serif;
+  font-size: clamp(64px, 5.8333vw, 112px);
+  font-style: italic;
+  font-weight: 900;
+  letter-spacing: 0.525vw;
+}
+
+.home-cover-letter {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(10px);
+  transform: translate3d(var(--scatter-x), var(--scatter-y), 0) rotate(var(--scatter-rotate));
+  animation: home-cover-letter-in 840ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(90ms + var(--letter-index) * 42ms);
+  will-change: transform, filter, opacity;
+}
+
+@keyframes home-cover-letter-in {
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.home-figma-cover p {
+  left: 37.3958vw;
+  top: 48.2407%;
+  font-family: "RTWS JyunYa Demo", "Songti SC", STSong, SimSun, serif;
+  font-size: clamp(32px, 2.8646vw, 55px);
+  font-weight: 400;
+  letter-spacing: 0.9167vw;
+}
+
+@media (max-width: 900px) {
+  .site-shell:has(.home-figma-cover) .topbar {
+    top: var(--nav-top, 8px);
+    width: var(--nav-width, calc(100% - 20px));
+    height: 50px;
+  }
+
+  .site-shell:has(.home-figma-cover) .topbar.is-nav-scrolled {
+    top: var(--nav-top, 8px);
+    width: var(--nav-width, min(344px, calc(100% - 20px)));
+  }
+
+  .site-shell:has(.home-figma-cover) .nav-toggle {
+    display: none;
+  }
+
+  .site-shell:has(.home-figma-cover) .nav-links {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    height: 50px;
+    gap: 0;
+    padding: 4px;
+    transform: none;
+  }
+
+  .site-shell:has(.home-figma-cover) .nav-links a {
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    font-size: 16px;
+    line-height: 1;
+    letter-spacing: 0.12em;
+  }
+
+  .site-shell:has(.home-figma-cover) .nav-links a.is-active {
+    width: 100%;
+    height: 40px;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .home-figma-cover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(22px, 5vw, 38px);
+    padding: 24px;
+  }
+
+  .home-figma-cover h1,
+  .home-figma-cover p {
+    position: static;
+    text-align: center;
+  }
+
+  .home-figma-cover h1 {
+    font-size: clamp(34px, 9vw, 76px);
+    letter-spacing: 0.055em;
+  }
+
+  .home-figma-cover p {
+    font-size: clamp(20px, 5.1vw, 38px);
+    letter-spacing: 0.32em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-cover-letter {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    animation: none;
+  }
+
+  .site-shell:has(.home-figma-cover) .topbar.nav-motion,
+  .site-shell:has(.home-figma-cover) .topbar.nav-motion.is-nav-ready,
+  .site-shell:has(.home-figma-cover) .topbar.nav-motion.is-nav-hidden {
+    opacity: 1;
+    filter: none;
+    transform: translate3d(-50%, 0, 0) scale(1);
+    transition: none;
+  }
+
+  .site-shell:has(.home-figma-cover) .nav-links a {
+    opacity: 1;
+    translate: 0 0;
+    transition: none;
+  }
+
+  .site-shell:has(.home-figma-cover) .nav-links a::before {
+    transform: none;
+  }
+
+  .site-shell:has(.home-figma-cover) .nav-links a::after {
+    display: none;
+  }
+}
+
+/* Homepage material and projects transition. */
+body:has(.home-intro-sequence)::before {
+  display: none;
+}
+
+.home-static-redesign,
+.home-figma-cover,
+.home-profile-screen {
+  background-color: #fefefe;
+  background-image: radial-gradient(circle at 1px 1px, rgba(61, 65, 68, 0.15) 0.85px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* The cover shares the same responsive canvas grid as the rest of the page. */
+.home-static-redesign {
+  background-image: none;
+}
+
+.home-figma-cover {
+  z-index: 1;
+  background-color: transparent;
+  background-image: none;
+}
+
+.home-dot-field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .home-static-redesign {
+    background-color: #fefefe;
+    background-image: radial-gradient(circle at 1px 1px, rgba(79, 87, 92, 0.17) 0.68px, transparent 0.88px);
+    background-size: 20px 20px;
+  }
+}
+
+.project-showcase {
+  --project-enter: 0;
+  position: relative;
+  z-index: 3;
+  margin-top: clamp(30px, 6vw, 80px);
+  overflow: visible;
+  border-radius: 46px 46px 0 0;
+  background-color: #141414;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.075) 0.8px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.project-showcase::before {
+  display: none;
+}
+
+.project-showcase > * {
+  position: relative;
+  z-index: 1;
+}
+
+.project-section-head {
+  color: #fff;
+  opacity: 1;
+  transform: translateY(calc((1 - var(--project-enter)) * 34px));
+  transition: color 180ms ease;
+  will-change: transform, opacity;
+}
+
+.project-section-head h2 {
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .project-showcase {
+    margin-top: 40px;
+  }
+
+  .project-showcase::before {
+    left: -10%;
+    top: -72px;
+    width: 120%;
+    height: 110px;
+  }
+}
+
+/* Figma 129:10571 — homepage second screen. */
+.home-profile-screen {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  width: 100vw;
+  min-height: 100svh;
+  height: 100svh;
+  overflow: hidden;
+  color: #000;
+  background-color: #fefefe;
+  background-image: radial-gradient(circle at 1px 1px, rgba(61, 65, 68, 0.15) 0.85px, transparent 1px);
+  background-size: 20px 20px;
+  margin-top: -18.8889svh;
+  border: 2px solid rgba(203, 203, 203, var(--profile-border-alpha, 1));
+  border-radius: var(--profile-radius, 112px);
+  box-shadow: 0 26px 80px rgba(0, 0, 0, var(--profile-shadow-alpha, 0.055));
+  opacity: var(--profile-opacity, 0.78);
+  transform: translateY(var(--profile-lift, 6svh)) scale(var(--profile-scale, 0.28));
+  transform-origin: center top;
+  will-change: transform, opacity, border-radius, box-shadow;
+}
+
+.home-profile-copy {
+  position: absolute;
+  left: 6.25vw;
+  top: 21.5%;
+  width: 43vw;
+}
+
+@media (min-width: 901px) {
+  .home-profile-copy {
+    transform: scale(0.9);
+    transform-origin: left top;
+  }
+}
+
+.home-profile-greeting {
+  margin: 0;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: clamp(16px, 1.45vw, 28px);
+  line-height: 1.2;
+  font-weight: 300;
+}
+
+.home-profile-greeting span {
+  display: inline-block;
+  margin: 0 10px 0 4px;
+}
+
+.home-profile-title {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 18px 0 0;
+  font-family: "RTWS JyunYa Demo", "Songti SC", STSong, SimSun, serif;
+  font-size: clamp(52px, 5.8vw, 112px);
+  line-height: 1.22;
+  font-weight: 400;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.home-profile-title > span {
+  display: block;
+}
+
+.home-profile-title > span:first-child {
+  letter-spacing: 0.03em;
+}
+
+.home-profile-title > span:last-child {
+  letter-spacing: 0.12em;
+}
+
+.home-profile-title em {
+  font-family: "Playfair Display", Didot, "Bodoni 72", Baskerville, Georgia, serif;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.home-profile-title em span {
+  display: inline;
+}
+
+.home-profile-title .home-profile-slash {
+  display: inline-block;
+  margin: 0 0.1em;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 200;
+  transform: scaleX(0.72);
+}
+
+.home-profile-description {
+  width: 43vw;
+  margin: 34px 0 0;
+  color: #6f6f6f;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: clamp(15px, 1.35vw, 26px);
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+.home-profile-actions {
+  display: flex;
+  gap: 29.7px;
+  margin-top: 33.4px;
+}
+
+.home-profile-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: min(8.90625vw, 171px);
+  min-width: 0;
+  height: min(2.90625vw, 55.8px);
+  padding: 0 min(0.9375vw, 18px);
+  border: 0.9px solid #bdbdbd;
+  border-radius: min(0.5672vw, 10.89px);
+  font-size: clamp(15px, 1.3125vw, 25.2px);
+  line-height: 1;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.home-profile-button:hover {
+  transform: translateY(-2px);
+}
+
+.home-profile-button-primary {
+  border-color: #000;
+  color: #fff;
+  background: #000;
+}
+
+.home-profile-mail-icon {
+  position: relative;
+  width: 18px;
+  height: 14px;
+  border: 1.4px solid currentColor;
+  border-radius: 3px;
+}
+
+.home-profile-mail-icon::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 1px;
+  width: 9px;
+  height: 6px;
+  border-right: 1.4px solid currentColor;
+  border-bottom: 1.4px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.home-profile-arrow {
+  display: inline-block;
+  font-size: 70%;
+}
+
+.home-profile-button-secondary {
+  width: min(9.8958vw, 190px);
+  color: #000;
+  background: #fff;
+}
+
+.home-profile-photo {
+  position: absolute;
+  right: 10.8vw;
+  top: calc(17.4% + 20px);
+  width: 30.1vw;
+  aspect-ratio: 1 / 1;
+  margin: 0;
+  padding: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(203, 203, 203, 0.36);
+  border-radius: 56px;
+  background: #fff;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.07);
+}
+
+.home-profile-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 46px;
+  object-fit: cover;
+}
+
+.home-profile-photo figcaption {
+  position: absolute;
+  right: 26px;
+  bottom: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 86px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 13px;
+  color: #fff;
+  background: rgba(43, 43, 43, 0.72);
+  font-size: 18px;
+  line-height: 1;
+  backdrop-filter: blur(8px);
+}
+
+@media (max-width: 900px) {
+  .home-profile-screen {
+    position: sticky;
+    top: 0;
+    height: auto;
+    min-height: 100svh;
+    margin-top: -14svh;
+    padding: 92px 20px 48px;
+    border-radius: var(--profile-radius, 52px);
+    opacity: var(--profile-opacity, 0.78);
+    transform: translateY(var(--profile-lift, 0svh)) scale(var(--profile-scale, 0.62));
+  }
+
+  .home-profile-copy,
+  .home-profile-photo {
+    position: static;
+    width: 100%;
+  }
+
+  .home-profile-title {
+    gap: 4px;
+    margin-top: 18px;
+    font-size: clamp(42px, 11.2vw, 72px);
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+
+  .home-profile-description {
+    margin-top: 24px;
+    font-size: 16px;
+    line-height: 1.72;
+  }
+
+  .home-profile-actions {
+    gap: 12px;
+    margin-top: 26px;
+  }
+
+  .home-profile-button {
+    width: auto;
+    min-width: 0;
+    height: 50px;
+    padding: 0 18px;
+    border-radius: 11px;
+    font-size: 17px;
+  }
+
+  .home-profile-button-primary,
+  .home-profile-button-secondary {
+    min-width: 0;
+  }
+
+  .home-profile-photo {
+    margin-top: 38px;
+    padding: 10px;
+    border: 1px solid rgba(203, 203, 203, 0.36);
+    border-radius: 30px;
+  }
+
+  .home-profile-photo img {
+    border-radius: 20px;
+  }
+
+  .home-profile-photo figcaption {
+    right: 22px;
+    bottom: 22px;
+    min-width: 76px;
+    height: 36px;
+    border-radius: 11px;
+    font-size: 15px;
+  }
+}

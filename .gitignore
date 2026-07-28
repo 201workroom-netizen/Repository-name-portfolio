@@ -1,0 +1,11 @@
+# 测试页
+nav-test.html
+
+# QA 截图和文档
+qa-*.png
+home-*.png
+design-qa.md
+
+# 临时文件
+.demo-*
+.DS_Store
