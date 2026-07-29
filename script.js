@@ -431,6 +431,25 @@ function setupProjectArcNav() {
       location.hash = newHash;
     });
   });
+
+  /* Slide-up reveal when scrolling into view */
+  const nav = document.querySelector(".project-arc-nav");
+  if (nav && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            nav.classList.add("is-visible");
+            observer.unobserve(nav);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -30px 0px" }
+    );
+    observer.observe(nav);
+  } else if (nav) {
+    nav.classList.add("is-visible");
+  }
 }
 
 function meituanHeroSection() {
