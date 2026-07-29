@@ -1346,7 +1346,6 @@ body.ai-detail-mode .topbar {
   --ai-case-edge: max(24px, calc((100vw - 1920px) / 2));
   width: 100%;
   padding: 24px;
-  overflow: hidden;
   color: #fff;
   background: #fff;
 }
