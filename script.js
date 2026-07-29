@@ -199,8 +199,8 @@ function landingPage() {
         </h2>
         <p class="home-profile-description">10年界面与体验设计经验，拥有跨平台设计能力，熟知C端、B端业务属性与设计重点。拥有0-1的项目设计经验，（竞品分析、用户研究）沟通协作能力较强，善于组织团队活动，是自然型人格。</p>
         <div class="home-profile-actions">
-          <a class="home-profile-button home-profile-button-primary" href="#contact"><span class="home-profile-mail-icon" aria-hidden="true"></span> 联系我</a>
-          <a class="home-profile-button home-profile-button-secondary" href="#work">查看项目 <span class="home-profile-arrow" aria-hidden="true">➜</span></a>
+          <a class="home-profile-button home-profile-button-primary" href="#contact"><img class="home-profile-mail-icon" src="./assets/icon-mail.png" alt="" aria-hidden="true" /> 联系我</a>
+          <a class="home-profile-button home-profile-button-secondary" href="#work">查看项目 <img class="home-profile-arrow" src="./assets/icon-arrow.png" alt="" aria-hidden="true" /></a>
         </div>
       </div>
       <figure class="home-profile-photo">
