@@ -418,6 +418,22 @@ function projectArcNav(currentId) {
   `;
 }
 
+function setupProjectArcNav() {
+  const items = document.querySelectorAll(".project-arc-nav-item");
+  items.forEach((item) => {
+    item.addEventListener("click", (event) => {
+      event.preventDefault();
+      const entry = item.dataset.navEntry;
+      if (!entry) return;
+      const newHash = `#project/${entry}`;
+      if (location.hash === newHash) return;
+      window.scrollTo(0, 0);
+      history.pushState(null, "", newHash);
+      render();
+    });
+  });
+}
+
 function meituanHeroSection() {
   return `
     <section class="ai-case-screen meituan-hero-section">
@@ -1525,6 +1541,7 @@ function render() {
     window.scrollTo(0, 0);
     setupOpeningReveal();
     setupDemoFramePosition();
+    setupProjectArcNav();
     if (section) setupProjectSectionNav(section);
     setActiveNav("work");
   } else {
