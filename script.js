@@ -432,24 +432,24 @@ function setupProjectArcNav() {
     });
   });
 
-  /* Slide-up reveal when scrolling into view */
+  /* Slide-up from bottom when scrolling near page end */
   const nav = document.querySelector(".project-arc-nav");
-  if (nav && "IntersectionObserver" in window) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            nav.classList.add("is-visible");
-            observer.unobserve(nav);
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -30px 0px" }
-    );
-    observer.observe(nav);
-  } else if (nav) {
-    nav.classList.add("is-visible");
+  if (!nav) return;
+
+  let revealed = false;
+
+  function checkScroll() {
+    if (revealed) return;
+    const scrollBottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+    if (scrollBottom < 200) {
+      revealed = true;
+      nav.classList.add("is-visible");
+      window.removeEventListener("scroll", checkScroll, { passive: true });
+    }
   }
+
+  window.addEventListener("scroll", checkScroll, { passive: true });
+  checkScroll(); // in case already at bottom on load
 }
 
 function meituanHeroSection() {
