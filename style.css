@@ -1880,7 +1880,7 @@ body.ai-detail-mode .reveal.visible {
   align-items: center;
   justify-content: center;
   min-height: min(calc(100vh - 48px), 1080px);
-  background: #0a0a0a url('./assets/meituan-hero-3d-bg-v2.jpg') center / cover no-repeat;
+  background: #0a0a0a url('./assets/meituan-hero-3d-bg-v2.webp') center / cover no-repeat;
   border-color: rgba(255, 255, 255, 0.1);
 }
 

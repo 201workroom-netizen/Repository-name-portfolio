@@ -129,10 +129,10 @@ const timeline = [
 ];
 
 const projectVisuals = {
-  "ai-search": { logo: "./assets/ai-search-logo.png", image: "./assets/project-ai-cover.png" },
-  "meituan-live": { logo: "./assets/meituan-logo-v2.png", image: "./assets/project-meituan-cover.png" },
-  gofun: { logo: "./assets/gofun-logo-v2.png", image: "./assets/project-gofun-cover.png" },
-  integrated: { logo: "./assets/integrated-logo.png", image: "./assets/project-integrated-cover.png" },
+  "ai-search": { logo: "./assets/ai-search-logo.png", image: "./assets/project-ai-cover.webp" },
+  "meituan-live": { logo: "./assets/meituan-logo-v2.png", image: "./assets/project-meituan-cover.webp" },
+  gofun: { logo: "./assets/gofun-logo-v2.png", image: "./assets/project-gofun-cover.webp" },
+  integrated: { logo: "./assets/integrated-logo.png", image: "./assets/project-integrated-cover.webp" },
 };
 
 const projectGroups = [
@@ -204,7 +204,7 @@ function landingPage() {
         </div>
       </div>
       <figure class="home-profile-photo">
-        <img src="./assets/yanan-profile-20260723b.jpg" alt="王雅楠个人照片" />
+        <img src="./assets/yanan-profile-20260723b.webp" alt="王雅楠个人照片" />
         <figcaption>体验设计</figcaption>
       </figure>
       </section>
@@ -256,14 +256,14 @@ function projectCard(project, index) {
   if (visual) {
     const visualMarkup = project.id === "ai-search"
       ? `<div class="project-visual ai-project-visual" aria-hidden="true">
-          <img class="ai-visual-bg" src="./assets/ai-cover-background.png" alt="" />
-          <img class="ai-phone ai-phone-left" src="./assets/ai-phone-commerce-v2.png" alt="" />
-          <img class="ai-phone ai-phone-right" src="./assets/ai-phone-content-v2.png" alt="" />
+          <img class="ai-visual-bg" src="./assets/ai-cover-background.webp" alt="" />
+          <img class="ai-phone ai-phone-left" src="./assets/ai-phone-commerce-v2.webp" alt="" />
+          <img class="ai-phone ai-phone-right" src="./assets/ai-phone-content-v2.webp" alt="" />
         </div>`
       : project.id === "meituan-live"
       ? `<div class="project-visual meituan-project-visual" aria-hidden="true">
-          <img class="meituan-phone meituan-phone-left" src="./assets/meituan-phone-ranking-v2.png" alt="" />
-          <img class="meituan-phone meituan-phone-right" src="./assets/meituan-phone-lottery-v2.png" alt="" />
+          <img class="meituan-phone meituan-phone-left" src="./assets/meituan-phone-ranking-v2.webp" alt="" />
+          <img class="meituan-phone meituan-phone-right" src="./assets/meituan-phone-lottery-v2.webp" alt="" />
         </div>`
       : `<div class="project-visual" aria-hidden="true"><img src="${visual.image}" alt="" /></div>`;
     return `
@@ -518,7 +518,7 @@ function meituanSpecDetailPage() {
 function meituanListProjectContent(grouped = false) {
   return [1, 2, 3, 4, 5, 6, 7].map((screen) => `
     <section class="ai-case-screen meituan-image-screen"${grouped && screen === 1 ? ' id="meituan-list" data-ai-section-screen="list"' : ""}>
-      <img src="./assets/meituan/screen-0${screen}@2x.png" alt="美团直播商品榜单方案第 ${screen} 屏" ${screen > 1 ? 'loading="lazy"' : ""} />
+      <img src="./assets/meituan/screen-0${screen}@2x.webp" alt="美团直播商品榜单方案第 ${screen} 屏" ${screen > 1 ? 'loading="lazy"' : ""} />
     </section>
   `).join("");
 }
@@ -526,14 +526,14 @@ function meituanListProjectContent(grouped = false) {
 function meituanLotteryProjectContent(grouped = false) {
   return `
     <section class="ai-case-screen meituan-image-screen lottery-video-screen"${grouped ? ' id="meituan-lottery" data-ai-section-screen="lottery"' : ""}>
-      <img src="./assets/meituan-lottery/screen-01@2x.png?v=2" alt="美团抽奖挂件迭代背景" />
+      <img src="./assets/meituan-lottery/screen-01@2x.webp?v=2" alt="美团抽奖挂件迭代背景" />
       <video class="lottery-phone-video" autoplay muted loop playsinline preload="auto" aria-label="直播间中奖动效">
         <source src="./assets/meituan-lottery/winning-loop.mp4" type="video/mp4" />
       </video>
     </section>
     ${[2, 3, 4].map((screen) => `
       <section class="ai-case-screen meituan-image-screen">
-        <img src="./assets/meituan-lottery/screen-0${screen}@2x.png" alt="美团抽奖项目第 ${screen} 屏" loading="lazy" />
+        <img src="./assets/meituan-lottery/screen-0${screen}@2x.webp" alt="美团抽奖项目第 ${screen} 屏" loading="lazy" />
       </section>
     `).join("")}
   `;
@@ -542,11 +542,11 @@ function meituanLotteryProjectContent(grouped = false) {
 function meituanFollowProjectContent(grouped = false) {
   return `
     <section class="ai-case-screen meituan-image-screen"${grouped ? ' id="meituan-follow" data-ai-section-screen="follow"' : ""}>
-      <img src="./assets/meituan-follow/screen-01@2x.png" alt="美团直播关注卡片项目背景" />
+      <img src="./assets/meituan-follow/screen-01@2x.webp" alt="美团直播关注卡片项目背景" />
     </section>
     <section class="ai-case-screen follow-demo-screen" aria-label="关注后领取红包动效展示">
       <div class="follow-demo-phone">
-        <img src="./assets/meituan-follow/phone-shell.png" alt="" aria-hidden="true" />
+        <img src="./assets/meituan-follow/phone-shell.webp" alt="" aria-hidden="true" />
         <video autoplay muted loop playsinline preload="auto">
           <source src="./assets/meituan-follow/red-packet-loop.mp4" type="video/mp4" />
         </video>
@@ -554,7 +554,7 @@ function meituanFollowProjectContent(grouped = false) {
     </section>
     ${[3, 4, 5, 6].map((screen) => `
       <section class="ai-case-screen meituan-image-screen">
-        <img src="./assets/meituan-follow/screen-0${screen}@2x.png" alt="美团关注卡片项目第 ${screen} 屏" loading="lazy" />
+        <img src="./assets/meituan-follow/screen-0${screen}@2x.webp" alt="美团关注卡片项目第 ${screen} 屏" loading="lazy" />
       </section>
     `).join("")}
   `;
@@ -563,7 +563,7 @@ function meituanFollowProjectContent(grouped = false) {
 function meituanSpecProjectContent(grouped = false) {
   return [1, 2].map((screen) => `
     <section class="ai-case-screen meituan-image-screen"${grouped && screen === 1 ? ' id="meituan-spec" data-ai-section-screen="spec"' : ""}>
-      <img src="./assets/meituan-spec/screen-0${screen}@2x.png" alt="美团直播设计规范第 ${screen} 屏" ${screen > 1 ? 'loading="lazy"' : ""} />
+      <img src="./assets/meituan-spec/screen-0${screen}@2x.webp" alt="美团直播设计规范第 ${screen} 屏" ${screen > 1 ? 'loading="lazy"' : ""} />
     </section>
   `).join("");
 }
@@ -586,7 +586,7 @@ function gofunDetailPage() {
             : '';
         return `
         <section class="ai-case-screen meituan-image-screen"${sectionAttrs}>
-          <img src="./assets/gofun/screen-${screen}@2x.png" alt="GoFun 出行体验升级第 ${num} 屏" ${screen !== "01" ? 'loading="lazy"' : ""} />
+          <img src="./assets/gofun/screen-${screen}@2x.webp" alt="GoFun 出行体验升级第 ${num} 屏" ${screen !== "01" ? 'loading="lazy"' : ""} />
         </section>
       `;
       }).join("")}
@@ -601,11 +601,11 @@ function integratedDetailPage() {
       ${projectHubNav()}
 
       <section class="ai-case-screen meituan-image-screen integrated-image-screen">
-        <img src="./assets/integrated/screen-01@2x.png" alt="Web3 综合项目概览" />
+        <img src="./assets/integrated/screen-01@2x.webp" alt="Web3 综合项目概览" />
       </section>
 
       <section class="ai-case-screen meituan-image-screen integrated-demo-screen" aria-label="TaskOn Boost Feature 动效展示">
-        <img src="./assets/integrated/screen-02@2x.png" alt="TaskOn Boost Feature" loading="lazy" />
+        <img src="./assets/integrated/screen-02@2x.webp" alt="TaskOn Boost Feature" loading="lazy" />
         <div class="integrated-demo-frame">
           <video class="integrated-demo-video" autoplay muted loop playsinline preload="metadata">
             <source src="./assets/integrated/web3banner-loop.mp4" type="video/mp4" />
@@ -615,39 +615,39 @@ function integratedDetailPage() {
 
       <section class="ai-case-screen meituan-image-screen integrated-image-screen integrated-valentine-screen">
         <h2 class="integrated-screen-title">TaskOn <strong>Valentine's Day</strong> Activities</h2>
-        <img src="./assets/integrated/screen-03@2x.png" alt="TaskOn 情人节活动运营设计" loading="lazy" />
+        <img src="./assets/integrated/screen-03@2x.webp" alt="TaskOn 情人节活动运营设计" loading="lazy" />
       </section>
 
       <section class="ai-case-screen meituan-image-screen integrated-image-screen">
-        <img src="./assets/integrated/screen-04@2x.png" alt="TaskOn Web3 运营类设计" loading="lazy" />
+        <img src="./assets/integrated/screen-04@2x.webp" alt="TaskOn Web3 运营类设计" loading="lazy" />
       </section>
 
       <section class="ai-case-screen meituan-image-screen integrated-image-screen">
-        <img src="./assets/integrated/screen-05@2x.png" alt="TaskOn 品牌视觉与三维元素设计" loading="lazy" />
+        <img src="./assets/integrated/screen-05@2x.webp" alt="TaskOn 品牌视觉与三维元素设计" loading="lazy" />
       </section>
 
       <section class="ai-case-screen meituan-image-screen integrated-image-screen">
-        <img src="./assets/integrated/screen-06@2x.png" alt="TaskOn 三维元素制作过程" loading="lazy" />
+        <img src="./assets/integrated/screen-06@2x.webp" alt="TaskOn 三维元素制作过程" loading="lazy" />
       </section>
 
       <section class="ai-case-screen meituan-image-screen integrated-image-screen">
-        <img src="./assets/integrated/screen-07@2x.png" alt="B 端工具类运营海报设计" loading="lazy" />
+        <img src="./assets/integrated/screen-07@2x.webp" alt="B 端工具类运营海报设计" loading="lazy" />
       </section>
 
       <section class="ai-case-screen meituan-image-screen integrated-image-screen">
-        <img src="./assets/integrated/screen-08@2x.png" alt="现代物料海报设计" loading="lazy" />
+        <img src="./assets/integrated/screen-08@2x.webp" alt="现代物料海报设计" loading="lazy" />
       </section>
 
       <section class="ai-case-screen meituan-image-screen integrated-image-screen">
-        <img src="./assets/integrated/screen-09@2x.png" alt="喜马拉雅有声读物 Banner 设计" loading="lazy" />
+        <img src="./assets/integrated/screen-09@2x.webp" alt="喜马拉雅有声读物 Banner 设计" loading="lazy" />
       </section>
 
       <section class="ai-case-screen meituan-image-screen integrated-image-screen">
-        <img src="./assets/integrated/screen-10@2x.png" alt="GoFun 运营海报设计" loading="lazy" />
+        <img src="./assets/integrated/screen-10@2x.webp" alt="GoFun 运营海报设计" loading="lazy" />
       </section>
 
       <section class="ai-case-screen meituan-image-screen integrated-image-screen">
-        <img src="./assets/integrated/screen-11@2x.png" alt="手绘插画展示" loading="lazy" />
+        <img src="./assets/integrated/screen-11@2x.webp" alt="手绘插画展示" loading="lazy" />
       </section>
       ${projectArcNav("integrated")}
     </main>
@@ -694,11 +694,11 @@ function aiCaseSwitcher() {
 function aiConsoleProjectContent(grouped = false) {
   return `
     <section class="ai-case-screen ai-console-screen"${grouped ? ' id="ai-search-console" data-ai-section-screen="console"' : ""}>
-      <img src="./assets/ai-console-screen-01@2x.png" alt="AI 搜推控制台项目概览" />
+      <img src="./assets/ai-console-screen-01@2x.webp" alt="AI 搜推控制台项目概览" />
     </section>
 
     <section class="ai-case-screen ai-console-screen">
-      <img src="./assets/ai-console-screen-02@2x.png" alt="AI 搜推控制台详细方案" loading="lazy" />
+      <img src="./assets/ai-console-screen-02@2x.webp" alt="AI 搜推控制台详细方案" loading="lazy" />
     </section>
   `;
 }
@@ -731,23 +731,23 @@ function aiVideoProjectContent(grouped = false) {
             <p>指标创新：提升视频播放转化、观看时长与互动。</p>
           </div>
         </div>
-        <img class="ai-video-hero-image reveal" src="./assets/ai-video-hero@2x.png" alt="AI 影视陪看助手界面" />
+        <img class="ai-video-hero-image reveal" src="./assets/ai-video-hero@2x.webp" alt="AI 影视陪看助手界面" />
       </section>
 
       <section class="ai-case-screen ai-video-image-screen">
-        <img src="./assets/ai-video-screen-02@2x.png" alt="AI 影视陪看助手用户洞察" loading="lazy" />
+        <img src="./assets/ai-video-screen-02@2x.webp" alt="AI 影视陪看助手用户洞察" loading="lazy" />
       </section>
 
       <section class="ai-case-screen ai-video-image-screen">
-        <img src="./assets/ai-video-screen-03@2x.png" alt="AI 影视陪看助手体验方案" loading="lazy" />
+        <img src="./assets/ai-video-screen-03@2x.webp" alt="AI 影视陪看助手体验方案" loading="lazy" />
       </section>
 
       <section class="ai-case-screen ai-video-long-screen">
-        <img src="./assets/ai-video-screen-04@2x.png" alt="AI 影视陪看助手详细方案" loading="lazy" />
+        <img src="./assets/ai-video-screen-04@2x.webp" alt="AI 影视陪看助手详细方案" loading="lazy" />
       </section>
 
       <section class="ai-case-screen ai-video-long-screen">
-        <img src="./assets/ai-video-screen-05@2x.png" alt="AI 影视陪看助手项目总结" loading="lazy" />
+        <img src="./assets/ai-video-screen-05@2x.webp" alt="AI 影视陪看助手项目总结" loading="lazy" />
       </section>
   `;
 }
@@ -759,11 +759,11 @@ function aiSearchDetailPage() {
       ${aiCaseSwitcher()}
 
       <section class="ai-case-screen ai-search-figma-hero" id="ai-search-overview" data-ai-section-screen="overview">
-        <img class="ai-search-hero-slice reveal" src="./assets/ai-search-hero-figma.png" alt="火山引擎 AI 搜索项目首屏" />
+        <img class="ai-search-hero-slice reveal" src="./assets/ai-search-hero-figma.webp" alt="火山引擎 AI 搜索项目首屏" />
       </section>
 
       <section class="ai-case-screen ai-search-commerce-screen" id="ai-search-commerce" data-ai-section-screen="commerce">
-        <img src="./assets/ai-search-commerce-assistant.png" alt="AI 电商导购助手项目背景与目标" loading="eager" />
+        <img src="./assets/ai-search-commerce-assistant.webp" alt="AI 电商导购助手项目背景与目标" loading="eager" />
       </section>
 
       <section class="ai-case-screen ai-case-demo">
@@ -784,7 +784,7 @@ function aiSearchDetailPage() {
           <h2>对话式 Agent 意图分类</h2>
         </header>
         <div class="ai-case-intent-art">
-          <img src="./assets/ai-intent-classification@2x.png" alt="对话式 Agent 意图分类方案" loading="lazy" />
+          <img src="./assets/ai-intent-classification@2x.webp" alt="对话式 Agent 意图分类方案" loading="lazy" />
         </div>
       </section>
 
