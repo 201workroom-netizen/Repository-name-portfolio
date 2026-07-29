@@ -428,8 +428,7 @@ function setupProjectArcNav() {
       const newHash = `#project/${entry}`;
       if (location.hash === newHash) return;
       window.scrollTo(0, 0);
-      history.pushState(null, "", newHash);
-      render();
+      location.hash = newHash;
     });
   });
 }
