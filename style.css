@@ -1346,28 +1346,23 @@ body.ai-detail-mode .topbar {
   --ai-case-edge: max(24px, calc((100vw - 1920px) / 2));
   width: 100%;
   padding: 24px;
-  padding-bottom: 140px;
   color: #fff;
   background: #fff;
 }
 
-/* ─── Project Arc Navigation (fixed bottom slide-up) ─── */
+/* ─── Project Arc Navigation (bottom of detail pages) ─── */
 .project-arc-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 40;
   display: flex;
   justify-content: center;
-  transform: translateY(100%);
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
+  margin-top: 120px;
+  opacity: 0;
+  transform: translateY(180px);
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .project-arc-nav.is-visible {
+  opacity: 1;
   transform: translateY(0);
-  pointer-events: auto;
 }
 
 .project-arc-nav-inner {
@@ -2499,7 +2494,6 @@ body.ai-detail-mode .reveal.visible {
 @media (max-width: 900px) {
   .ai-case-page {
     padding: 12px;
-    padding-bottom: 140px;
   }
 
   .integrated-demo-frame {

@@ -432,7 +432,7 @@ function setupProjectArcNav() {
     });
   });
 
-  /* Slide-up from bottom when scrolling near page end */
+  /* Slide-up when user scrolls near the very bottom */
   const nav = document.querySelector(".project-arc-nav");
   if (!nav) return;
 
@@ -441,7 +441,8 @@ function setupProjectArcNav() {
   function checkScroll() {
     if (revealed) return;
     const scrollBottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
-    if (scrollBottom < 200) {
+    // Trigger only when user is very close to the absolute end
+    if (scrollBottom < 80) {
       revealed = true;
       nav.classList.add("is-visible");
       window.removeEventListener("scroll", checkScroll, { passive: true });
@@ -449,7 +450,7 @@ function setupProjectArcNav() {
   }
 
   window.addEventListener("scroll", checkScroll, { passive: true });
-  checkScroll(); // in case already at bottom on load
+  checkScroll();
 }
 
 function meituanHeroSection() {
