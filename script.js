@@ -375,6 +375,7 @@ function detailPage(id) {
           ${caseBlock("复盘与沉淀", "项目结束后，我会沉淀可复用的判断标准、组件规则和协作方式，让一次项目经验继续影响后续产品迭代。")}
         </div>
       </section>
+      ${projectArcNav(id)}
     </main>
   `;
 }
@@ -397,6 +398,23 @@ function projectHubNav() {
         </nav>
       </div>
     </div>
+  `;
+}
+
+function projectArcNav(currentId) {
+  const currentGroup = projectGroups.find((g) => g.members.includes(currentId)) || projectGroups[0];
+  return `
+    <nav class="project-arc-nav" aria-label="项目目录">
+      <div class="project-arc-nav-inner">
+        <div class="project-arc-nav-list">
+          ${projectGroups.map((g) => `
+            <a href="#project/${g.entry}" class="project-arc-nav-item ${g.label === currentGroup.label ? "active" : ""}" data-nav-entry="${g.entry}">
+              ${g.label}
+            </a>
+          `).join("")}
+        </div>
+      </div>
+    </nav>
   `;
 }
 
@@ -424,6 +442,7 @@ function meituanDetailPage() {
       ${meituanLotteryProjectContent(true)}
       ${meituanFollowProjectContent(true)}
       ${meituanSpecProjectContent(true)}
+      ${projectArcNav("meituan-live")}
     </main>
   `;
 }
@@ -434,6 +453,7 @@ function meituanLotteryDetailPage() {
       ${projectHubNav()}
       ${meituanCaseSwitcher()}
       ${meituanLotteryProjectContent()}
+      ${projectArcNav("meituan-lottery")}
     </main>
   `;
 }
@@ -444,6 +464,7 @@ function meituanFollowDetailPage() {
       ${projectHubNav()}
       ${meituanCaseSwitcher()}
       ${meituanFollowProjectContent()}
+      ${projectArcNav("meituan-follow")}
     </main>
   `;
 }
@@ -454,6 +475,7 @@ function meituanSpecDetailPage() {
       ${projectHubNav()}
       ${meituanCaseSwitcher()}
       ${meituanSpecProjectContent()}
+      ${projectArcNav("meituan-spec")}
     </main>
   `;
 }
@@ -533,6 +555,7 @@ function gofunDetailPage() {
         </section>
       `;
       }).join("")}
+      ${projectArcNav("gofun")}
     </main>
   `;
 }
@@ -591,6 +614,7 @@ function integratedDetailPage() {
       <section class="ai-case-screen meituan-image-screen integrated-image-screen">
         <img src="./assets/integrated/screen-11@2x.png" alt="手绘插画展示" loading="lazy" />
       </section>
+      ${projectArcNav("integrated")}
     </main>
   `;
 }
@@ -615,6 +639,7 @@ function aiConsoleDetailPage() {
       ${projectHubNav()}
       ${aiCaseSwitcher()}
       ${aiConsoleProjectContent()}
+      ${projectArcNav("console")}
     </main>
   `;
 }
@@ -649,6 +674,7 @@ function aiVideoDetailPage() {
       ${projectHubNav()}
       ${aiCaseSwitcher()}
       ${aiVideoProjectContent()}
+      ${projectArcNav("ai-video")}
     </main>
   `;
 }
@@ -729,6 +755,7 @@ function aiSearchDetailPage() {
 
       ${aiVideoProjectContent(true)}
       ${aiConsoleProjectContent(true)}
+      ${projectArcNav("ai-search")}
     </main>
   `;
 }

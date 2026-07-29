@@ -1351,6 +1351,65 @@ body.ai-detail-mode .topbar {
   background: #fff;
 }
 
+/* ─── Project Arc Navigation (bottom of detail pages) ─── */
+.project-arc-nav {
+  display: flex;
+  justify-content: center;
+  margin-top: 80px;
+}
+
+.project-arc-nav-inner {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  background: #0a0a0a;
+  border-radius: 260px 260px 0 0;
+  padding: 50px 30px 20px;
+}
+
+.project-arc-nav-list {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.project-arc-nav-list::-webkit-scrollbar {
+  display: none;
+}
+
+.project-arc-nav-item {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+
+.project-arc-nav-item:hover,
+.project-arc-nav-item.active {
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .project-arc-nav-inner {
+    border-radius: 50% 50% 0 0;
+    padding: 40px 20px 16px;
+  }
+
+  .project-arc-nav-list {
+    gap: 20px;
+    justify-content: flex-start;
+    padding: 0 8px;
+  }
+
+  .project-arc-nav-item {
+    font-size: 13px;
+  }
+}
+
 .ai-case-left-nav {
   position: fixed;
   left: var(--ai-case-edge);
