@@ -666,16 +666,17 @@ body:has(.home-intro-sequence)::before {
   height: min(2.90625vw, 55.8px);
   padding: 0 min(0.9375vw, 18px);
   border: 0.9px solid #bdbdbd;
-  border-radius: min(0.5672vw, 10.89px);
+  border-radius: 12px;
   font-size: clamp(15px, 1.3125vw, 25.2px);
   line-height: 1;
   white-space: nowrap;
   flex: 0 0 auto;
-  transition: transform 180ms ease, background-color 180ms ease;
+  transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
 .home-profile-button:hover {
   transform: translateY(-2px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
 .home-profile-button-primary {
