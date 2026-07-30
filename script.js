@@ -403,54 +403,103 @@ function projectHubNav() {
 
 function projectArcNav(currentId) {
   const currentGroup = projectGroups.find((g) => g.members.includes(currentId)) || projectGroups[0];
+  const cardAssets = {
+    "ai-search": "./assets/switcher-byte.png?v=20260730h",
+    "meituan-live": "./assets/switcher-meituan.png?v=20260730h",
+    gofun: "./assets/switcher-gofun.png?v=20260730h",
+    integrated: "./assets/switcher-integrated.png?v=20260730h",
+  };
   return `
-    <nav class="project-arc-nav" aria-label="项目目录">
-      <div class="project-arc-nav-inner">
-        <div class="project-arc-nav-list">
+    <nav class="project-arc-nav project-switcher" aria-label="切换项目" data-active-entry="${currentGroup.entry}">
+      <div class="project-switcher-stage">
+        <div class="project-switcher-deck" role="list">
           ${projectGroups.map((g) => `
-            <a href="#project/${g.entry}" class="project-arc-nav-item ${g.label === currentGroup.label ? "active" : ""}" data-nav-entry="${g.entry}">
-              ${g.label}
-            </a>
+            <button class="project-switcher-card" type="button" data-nav-entry="${g.entry}" role="listitem" aria-label="查看${g.label}项目">
+              <span class="project-switcher-card-visual">
+                <img src="${cardAssets[g.entry]}" alt="" draggable="false" />
+                <span class="project-switcher-card-mask" aria-hidden="true"></span>
+                <span class="project-switcher-card-label" aria-hidden="true">${g.label}</span>
+              </span>
+            </button>
           `).join("")}
         </div>
+        <p class="project-switcher-caption">CONTENTS</p>
+        <a class="project-switcher-contact" href="#contact">联系我</a>
       </div>
     </nav>
   `;
 }
 
-function setupProjectArcNav() {
-  const items = document.querySelectorAll(".project-arc-nav-item");
-  items.forEach((item) => {
-    item.addEventListener("click", (event) => {
-      event.preventDefault();
-      const entry = item.dataset.navEntry;
-      if (!entry) return;
-      const newHash = `#project/${entry}`;
-      if (location.hash === newHash) return;
-      window.scrollTo(0, 0);
-      location.hash = newHash;
-    });
-  });
+let projectArcNavController = null;
 
-  /* Slide-up when user scrolls near the very bottom */
+function setupProjectArcNav() {
+  projectArcNavController?.abort();
+  const controller = new AbortController();
+  const { signal } = controller;
+  projectArcNavController = controller;
   const nav = document.querySelector(".project-arc-nav");
   if (!nav) return;
 
-  let revealed = false;
+  const cards = [...nav.querySelectorAll(".project-switcher-card")];
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let lastScrollY = window.scrollY;
+  let dismissedOnUp = false;
+  let retiring = false;
+  let retireTimer = 0;
+  const expandDeck = () => {
+    if (retiring || dismissedOnUp) return;
+    nav.classList.add("is-expanded");
+  };
+  const retireDeck = () => {
+    if (retiring) return;
+    retiring = true;
+    dismissedOnUp = true;
+    nav.classList.remove("is-expanded");
+    retireTimer = window.setTimeout(() => {
+      nav.classList.remove("is-visible");
+      retiring = false;
+    }, reduceMotion ? 0 : 720);
+  };
+  const goToProject = (card) => {
+    const entry = card.dataset.navEntry;
+    if (!entry) return;
+    cards.forEach((item) => item.classList.toggle("is-target", item === card));
+    nav.classList.add("is-focusing");
+    window.setTimeout(() => {
+      window.scrollTo(0, 0);
+      location.hash = `#project/${entry}`;
+    }, reduceMotion ? 0 : 400);
+  };
+  const syncVisibility = () => {
+    const scrollY = window.scrollY;
+    const movingUp = scrollY < lastScrollY - 2;
+    const movingDown = scrollY > lastScrollY + 2;
+    const bounds = nav.getBoundingClientRect();
+    const shouldShow = bounds.top <= window.innerHeight * 0.92 && bounds.bottom >= 0;
 
-  function checkScroll() {
-    if (revealed) return;
-    const scrollBottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
-    // Trigger only when user is very close to the absolute end
-    if (scrollBottom < 80) {
-      revealed = true;
-      nav.classList.add("is-visible");
-      window.removeEventListener("scroll", checkScroll, { passive: true });
+    if (movingDown && dismissedOnUp) {
+      window.clearTimeout(retireTimer);
+      retiring = false;
+      dismissedOnUp = false;
     }
-  }
+    if (movingUp && nav.classList.contains("is-expanded")) retireDeck();
 
-  window.addEventListener("scroll", checkScroll, { passive: true });
-  checkScroll();
+    if (!retiring && !dismissedOnUp) nav.classList.toggle("is-visible", shouldShow);
+    else if (!retiring && !shouldShow) nav.classList.remove("is-visible");
+    lastScrollY = scrollY;
+  };
+
+  syncVisibility();
+  window.addEventListener("scroll", syncVisibility, { passive: true, signal });
+  signal.addEventListener("abort", () => window.clearTimeout(retireTimer), { once: true });
+
+  cards.forEach((card) => {
+    card.addEventListener("mouseover", expandDeck, { signal });
+    card.addEventListener("click", () => {
+      if (!nav.classList.contains("is-expanded")) return expandDeck();
+      goToProject(card);
+    }, { signal });
+  });
 }
 
 function meituanHeroSection() {
@@ -517,7 +566,7 @@ function meituanSpecDetailPage() {
 
 function meituanListProjectContent(grouped = false) {
   return [1, 2, 3, 4, 5, 6, 7].map((screen) => `
-    <section class="ai-case-screen meituan-image-screen"${grouped && screen === 1 ? ' id="meituan-list" data-ai-section-screen="list"' : ""}>
+    <section class="ai-case-screen meituan-image-screen"${grouped && screen === 1 ? ' id="meituan-list" data-ai-section-screen="list"' : ""}${screen === 7 ? " data-project-last-screen" : ""}>
       <img src="./assets/meituan/screen-0${screen}@2x.webp" alt="美团直播商品榜单方案第 ${screen} 屏" ${screen > 1 ? 'loading="lazy"' : ""} />
     </section>
   `).join("");
@@ -532,7 +581,7 @@ function meituanLotteryProjectContent(grouped = false) {
       </video>
     </section>
     ${[2, 3, 4].map((screen) => `
-      <section class="ai-case-screen meituan-image-screen">
+      <section class="ai-case-screen meituan-image-screen"${screen === 4 ? " data-project-last-screen" : ""}>
         <img src="./assets/meituan-lottery/screen-0${screen}@2x.webp" alt="美团抽奖项目第 ${screen} 屏" loading="lazy" />
       </section>
     `).join("")}
@@ -553,7 +602,7 @@ function meituanFollowProjectContent(grouped = false) {
       </div>
     </section>
     ${[3, 4, 5, 6].map((screen) => `
-      <section class="ai-case-screen meituan-image-screen">
+      <section class="ai-case-screen meituan-image-screen"${screen === 6 ? " data-project-last-screen" : ""}>
         <img src="./assets/meituan-follow/screen-0${screen}@2x.webp" alt="美团关注卡片项目第 ${screen} 屏" loading="lazy" />
       </section>
     `).join("")}
@@ -562,7 +611,7 @@ function meituanFollowProjectContent(grouped = false) {
 
 function meituanSpecProjectContent(grouped = false) {
   return [1, 2].map((screen) => `
-    <section class="ai-case-screen meituan-image-screen"${grouped && screen === 1 ? ' id="meituan-spec" data-ai-section-screen="spec"' : ""}>
+    <section class="ai-case-screen meituan-image-screen"${grouped && screen === 1 ? ' id="meituan-spec" data-ai-section-screen="spec"' : ""}${screen === 2 ? " data-project-last-screen" : ""}>
       <img src="./assets/meituan-spec/screen-0${screen}@2x.webp" alt="美团直播设计规范第 ${screen} 屏" ${screen > 1 ? 'loading="lazy"' : ""} />
     </section>
   `).join("");
@@ -585,7 +634,7 @@ function gofunDetailPage() {
             ? ' id="gofun-official" data-ai-section-screen="official"'
             : '';
         return `
-        <section class="ai-case-screen meituan-image-screen"${sectionAttrs}>
+        <section class="ai-case-screen meituan-image-screen"${sectionAttrs}${num === screens.length ? " data-project-last-screen" : ""}>
           <img src="./assets/gofun/screen-${screen}@2x.webp" alt="GoFun 出行体验升级第 ${num} 屏" ${screen !== "01" ? 'loading="lazy"' : ""} />
         </section>
       `;
@@ -646,7 +695,7 @@ function integratedDetailPage() {
         <img src="./assets/integrated/screen-10@2x.webp" alt="GoFun 运营海报设计" loading="lazy" />
       </section>
 
-      <section class="ai-case-screen meituan-image-screen integrated-image-screen">
+      <section class="ai-case-screen meituan-image-screen integrated-image-screen" data-project-last-screen>
         <img src="./assets/integrated/screen-11@2x.webp" alt="手绘插画展示" loading="lazy" />
       </section>
       ${projectArcNav("integrated")}
@@ -697,7 +746,7 @@ function aiConsoleProjectContent(grouped = false) {
       <img src="./assets/ai-console-screen-01@2x.webp" alt="AI 搜推控制台项目概览" />
     </section>
 
-    <section class="ai-case-screen ai-console-screen">
+    <section class="ai-case-screen ai-console-screen" data-project-last-screen>
       <img src="./assets/ai-console-screen-02@2x.webp" alt="AI 搜推控制台详细方案" loading="lazy" />
     </section>
   `;
@@ -746,7 +795,7 @@ function aiVideoProjectContent(grouped = false) {
         <img src="./assets/ai-video-screen-04@2x.webp" alt="AI 影视陪看助手详细方案" loading="lazy" />
       </section>
 
-      <section class="ai-case-screen ai-video-long-screen">
+      <section class="ai-case-screen ai-video-long-screen" data-project-last-screen>
         <img src="./assets/ai-video-screen-05@2x.webp" alt="AI 影视陪看助手项目总结" loading="lazy" />
       </section>
   `;
