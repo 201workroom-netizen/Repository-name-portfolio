@@ -6,6 +6,34 @@
     <title>AI 搜索动效 Demo</title>
     <script type="module" src="./assets/index-Ar09Jhcb.js"></script>
     <link rel="stylesheet" href="./assets/index-CdB6gfmL.css">
+    <style>
+      .click-cue {
+        animation-name: click-breathe-yellow;
+      }
+
+      @keyframes click-breathe-yellow {
+        0%,
+        100% {
+          box-shadow:
+            0 0 0 0 rgba(255, 184, 0, 0.34),
+            0 0 0 rgba(255, 184, 0, 0);
+        }
+
+        50% {
+          box-shadow:
+            0 0 0 12px rgba(255, 184, 0, 0.46),
+            0 0 22px rgba(255, 184, 0, 0.34);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .click-cue {
+          box-shadow:
+            0 0 0 9px rgba(255, 184, 0, 0.42),
+            0 0 18px rgba(255, 184, 0, 0.28);
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

@@ -822,7 +822,7 @@ function aiSearchDetailPage() {
         </header>
         <div class="demo-phone-stage reveal" style="--delay:100ms">
           <div class="demo-phone-frame">
-            <iframe src="./ecommerce-demo/index.html?v=20260728h" title="AI 电商搜索交互 Demo" loading="eager"></iframe>
+            <iframe src="./ecommerce-demo/index.html?v=20260730a" title="AI 电商搜索交互 Demo" loading="eager"></iframe>
           </div>
         </div>
       </section>
