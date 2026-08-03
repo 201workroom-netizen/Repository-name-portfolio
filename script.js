@@ -178,6 +178,15 @@ function projectLogoMarkup(project) {
   `;
 }
 
+function deferMobileImages(markup) {
+  if (!window.matchMedia("(max-width: 900px)").matches) return markup;
+  return markup.replace(/<img\b[^>]*>/g, (tag) => {
+    // 这四张长图依赖图片本身撑开版面，保留原生懒加载，避免出现高度跳变。
+    if (!tag.includes('loading="lazy"') || /ai-video-screen-0[45]|ai-console-screen-0[12]/.test(tag)) return tag;
+    return tag.replace(/\ssrc=(['"])(.*?)\1/, " data-src=$1$2$1");
+  });
+}
+
 function landingPage() {
   const homeProjects = projects.filter((project) => project.id !== "console");
   return `
@@ -577,8 +586,8 @@ function meituanLotteryProjectContent(grouped = false) {
   return `
     <section class="ai-case-screen meituan-image-screen lottery-video-screen"${grouped ? ' id="meituan-lottery" data-ai-section-screen="lottery"' : ""}>
       <img src="./assets/meituan-lottery/screen-01@2x.webp?v=2" alt="美团抽奖挂件迭代背景" loading="lazy" decoding="async" />
-      <video class="lottery-phone-video" autoplay muted loop playsinline preload="auto" aria-label="直播间中奖动效">
-        <source src="./assets/meituan-lottery/winning-loop.mp4" type="video/mp4" />
+      <video class="lottery-phone-video" autoplay muted loop playsinline preload="none" data-deferred-video aria-label="直播间中奖动效">
+        <source data-src="./assets/meituan-lottery/winning-loop.mp4" type="video/mp4" />
       </video>
     </section>
     ${[2, 3, 4].map((screen) => `
@@ -597,8 +606,8 @@ function meituanFollowProjectContent(grouped = false) {
     <section class="ai-case-screen follow-demo-screen" aria-label="关注后领取红包动效展示">
       <div class="follow-demo-phone">
         <img src="./assets/meituan-follow/phone-shell.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
-        <video autoplay muted loop playsinline preload="auto">
-          <source src="./assets/meituan-follow/red-packet-loop.mp4" type="video/mp4" />
+        <video autoplay muted loop playsinline preload="none" data-deferred-video>
+          <source data-src="./assets/meituan-follow/red-packet-loop.mp4" type="video/mp4" />
         </video>
       </div>
     </section>
@@ -657,8 +666,8 @@ function integratedDetailPage() {
       <section class="ai-case-screen meituan-image-screen integrated-demo-screen" aria-label="TaskOn Boost Feature 动效展示">
         <img src="./assets/integrated/screen-02@2x.webp" alt="TaskOn Boost Feature" loading="lazy" decoding="async" />
         <div class="integrated-demo-frame">
-          <video class="integrated-demo-video" autoplay muted loop playsinline preload="metadata">
-            <source src="./assets/integrated/web3banner-loop.mp4" type="video/mp4" />
+          <video class="integrated-demo-video" autoplay muted loop playsinline preload="none" data-deferred-video>
+            <source data-src="./assets/integrated/web3banner-loop.mp4" type="video/mp4" />
           </video>
         </div>
       </section>
@@ -864,6 +873,65 @@ function setupReveal() {
   }, { threshold: 0.08, rootMargin: "60px" });
 
   document.querySelectorAll(".reveal").forEach((item) => observer.observe(item));
+}
+
+let deferredMediaController = null;
+
+function clearDeferredMediaLoading() {
+  deferredMediaController?.abort();
+  deferredMediaController = null;
+}
+
+function setupDeferredMediaLoading() {
+  clearDeferredMediaLoading();
+
+  // 详情页会同时生成同项目组的所有内容。将循环视频延后到即将进入视口时再请求，
+  // 避免它们与首屏图片、字体竞争移动网络带宽。
+  const images = [...document.querySelectorAll("img[data-src]")];
+  const videos = [...document.querySelectorAll("video[data-deferred-video]")];
+  document.querySelectorAll('img[loading="lazy"]').forEach((image) => {
+    image.fetchPriority = "low";
+  });
+  if (!("IntersectionObserver" in window)) {
+    images.forEach((image) => { image.src = image.dataset.src; });
+    videos.forEach((video) => {
+      const source = video.querySelector("source[data-src]");
+      if (source) source.src = source.dataset.src;
+      video.load();
+    });
+    return;
+  }
+  if (!images.length && !videos.length) return;
+
+  const controller = new AbortController();
+  deferredMediaController = controller;
+  const hydrate = (video) => {
+    const source = video.querySelector("source[data-src]");
+    if (source) {
+      source.src = source.dataset.src;
+      source.removeAttribute("data-src");
+      video.load();
+    }
+    const playback = video.play();
+    playback?.catch(() => {});
+  };
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.target.matches("img")) {
+        if (!entry.isIntersecting) return;
+        entry.target.src = entry.target.dataset.src;
+        entry.target.removeAttribute("data-src");
+        observer.unobserve(entry.target);
+        return;
+      }
+      if (entry.isIntersecting) hydrate(entry.target);
+      else entry.target.pause();
+    });
+  }, { rootMargin: "900px 0px" });
+
+  images.forEach((image) => observer.observe(image));
+  videos.forEach((video) => observer.observe(video));
+  controller.signal.addEventListener("abort", () => observer.disconnect(), { once: true });
 }
 
 let dotFieldController = null;
@@ -1623,6 +1691,7 @@ function render() {
   clearHomeIntroTransition();
   clearDemoStory();
   clearProjectSectionNav();
+  clearDeferredMediaLoading();
   const hash = location.hash.replace("#", "");
   if (hash.startsWith("project/")) {
     const requestedProjectId = hash.split("/")[1];
@@ -1645,7 +1714,7 @@ function render() {
     document.body.style.setProperty("--dark-radius", "0vmax");
     document.documentElement.classList.add("is-project-transitioning");
     window.scrollTo(0, 0);
-    app.innerHTML = detailPage(projectId);
+    app.innerHTML = deferMobileImages(detailPage(projectId));
     window.scrollTo(0, 0);
     setupOpeningReveal();
     setupDemoFramePosition();
@@ -1655,7 +1724,7 @@ function render() {
   } else {
     document.body.classList.remove("ai-detail-mode");
     document.body.classList.remove("dark-mode");
-    app.innerHTML = landingPage();
+    app.innerHTML = deferMobileImages(landingPage());
     setupReveal();
     setupProjectNavState();
     setupCursorPills();
@@ -1671,6 +1740,7 @@ function render() {
   setupDotField();
   setupMagneticControls();
   setupScrollProgress();
+  setupDeferredMediaLoading();
 }
 
 navToggle.addEventListener("click", () => {
