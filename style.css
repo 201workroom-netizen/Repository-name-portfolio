@@ -681,6 +681,12 @@ body.dark-mode .nav-links .theme-dot {
   filter: saturate(1.04) contrast(1.02);
 }
 
+/* The source artwork contains a desktop corner baked into the top-right.
+   Shift the cover crop so the artwork remains edge-to-edge at every size. */
+.project-card[data-project="integrated"] .project-visual > img {
+  object-position: center 20%;
+}
+
 .ai-project-visual .ai-visual-bg {
   position: absolute;
   inset: 0;
@@ -693,9 +699,9 @@ body.dark-mode .nav-links .theme-dot {
 
 .ai-project-visual .ai-phone {
   position: absolute;
-  top: 11.1%;
-  width: 30.65%;
-  height: 69.7%;
+  top: 15.4%;
+  width: 29.2%;
+  height: auto;
   object-fit: contain;
   transform: translate3d(0, 0, 0);
   transition: transform 1050ms cubic-bezier(0.16, 1, 0.3, 1), filter 700ms ease;
@@ -703,11 +709,11 @@ body.dark-mode .nav-links .theme-dot {
 }
 
 .ai-phone-left {
-  left: 17.5%;
+  left: 19.1%;
 }
 
 .ai-phone-right {
-  left: 51.8%;
+  left: 53%;
   transition-delay: 35ms;
 }
 
@@ -1826,26 +1832,26 @@ html.is-project-arc-animating body {
   }
 
   .project-switcher-stage {
-    min-height: 270px;
+    min-height: 0;
     aspect-ratio: 1.5 / 1;
-    border-radius: 28px;
+    border-radius: 22px;
   }
 
   .project-switcher-card {
-    --card-collapsed-top: 38%;
-    width: 27%;
+    --card-collapsed-top: 34%;
+    width: 22%;
   }
 
-  .project-switcher-card[data-nav-entry="ai-search"] { --card-left: 27%; --card-top: 52%; }
-  .project-switcher-card[data-nav-entry="meituan-live"] { --card-left: 42%; --card-top: 47%; }
-  .project-switcher-card[data-nav-entry="gofun"] { --card-left: 58%; --card-top: 47%; }
-  .project-switcher-card[data-nav-entry="integrated"] { --card-left: 73%; --card-top: 52%; }
+  .project-switcher-card[data-nav-entry="ai-search"] { --card-left: 30%; --card-top: 38%; }
+  .project-switcher-card[data-nav-entry="meituan-live"] { --card-left: 43%; --card-top: 34%; }
+  .project-switcher-card[data-nav-entry="gofun"] { --card-left: 57%; --card-top: 34%; }
+  .project-switcher-card[data-nav-entry="integrated"] { --card-left: 70%; --card-top: 38%; }
 
   .project-switcher-card:hover,
   .project-switcher-card:focus-visible,
   .project-switcher-card.is-target {
-    width: 29.7%;
-    top: calc(var(--card-top) - 4%);
+    width: 24.2%;
+    top: calc(var(--card-top) - 3%);
   }
 
   .project-switcher-card-label {
@@ -1853,15 +1859,17 @@ html.is-project-arc-animating body {
   }
 
   .project-switcher-caption {
-    font-size: 20px;
+    top: 69%;
+    font-size: 16px;
   }
 
   .project-switcher-contact {
+    top: 84%;
     width: auto;
-    min-width: 92px;
-    height: 42px;
-    min-height: 42px;
-    font-size: 15px;
+    min-width: 84px;
+    height: 38px;
+    min-height: 38px;
+    font-size: 14px;
   }
 
 }
@@ -2083,7 +2091,7 @@ html.is-project-arc-animating body {
   }
 
   .ai-case-switcher {
-    top: 72px;
+    top: 18px;
     right: 12px;
   }
 
@@ -2166,7 +2174,7 @@ body.ai-detail-mode .reveal.visible {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
 }
 
@@ -2182,7 +2190,7 @@ body.ai-detail-mode .reveal.visible {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
 }
 
@@ -2364,6 +2372,7 @@ body.ai-detail-mode .reveal.visible {
 .meituan-hero-copy {
   flex: 0 1 520px;
   color: #fff;
+  text-align: left;
 }
 
 .meituan-hero-copy h1 {
@@ -2734,6 +2743,10 @@ body.ai-detail-mode .reveal.visible {
   min-height: 832px;
 }
 
+.ai-case-demo > .demo-phone-stage {
+  margin-top: 20px;
+}
+
 .demo-phone-frame {
   position: relative;
   width: 403px;
@@ -2745,6 +2758,42 @@ body.ai-detail-mode .reveal.visible {
   background: #fff;
   box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.35);
 }
+
+.demo-phone-loader {
+  position: absolute;
+  inset: 13px;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  border-radius: 36px;
+  background: #f3f4f4;
+  color: rgba(17, 17, 17, 0.48);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  transition: opacity 240ms ease, visibility 0s linear 240ms;
+}
+
+.demo-phone-loader span {
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(17, 17, 17, 0.1);
+  border-top-color: rgba(93, 81, 254, 0.72);
+  border-radius: 50%;
+  animation: demo-loader-spin 800ms linear infinite;
+}
+
+.demo-phone-frame[data-demo-status="ready"] .demo-phone-loader {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.demo-phone-frame[data-demo-status="slow"] .demo-phone-loader p::after {
+  content: "，请稍候";
+}
+
+@keyframes demo-loader-spin { to { transform: rotate(360deg); } }
 
 @media (max-height: 960px) and (min-width: 901px) {
   .demo-phone-stage {
@@ -2764,12 +2813,12 @@ body.ai-detail-mode .reveal.visible {
   }
 
   .demo-phone-stage {
-    min-height: 550px;
+    min-height: 650px;
   }
 
   .demo-phone-frame {
-    transform: scale(0.66);
-    margin-block: -141px;
+    transform: scale(0.78);
+    margin-block: -92px;
   }
 }
 
@@ -2975,6 +3024,15 @@ body.ai-detail-mode .reveal.visible {
     padding: 108px 22px 70px;
   }
 
+  .ai-search-figma-hero,
+  .ai-search-commerce-screen,
+  .ai-video-image-screen,
+  .ai-video-long-screen,
+  .ai-console-screen,
+  .meituan-image-screen {
+    padding: 0;
+  }
+
   .ai-case-intro,
   .ai-case-users,
   .ai-case-demo {
@@ -3003,10 +3061,10 @@ body.ai-detail-mode .reveal.visible {
   .ai-case-intro-image {
     position: relative;
     inset: auto;
-    width: 150%;
+    width: 100%;
     height: auto;
-    max-width: none;
-    margin-left: -25%;
+    max-width: 100%;
+    margin-left: 0;
   }
 
   .ai-video-intro {
@@ -3020,10 +3078,10 @@ body.ai-detail-mode .reveal.visible {
 
   .ai-video-hero-image {
     position: relative;
-    width: 180%;
+    width: 100%;
     height: auto;
-    max-width: none;
-    margin: 40px 0 0 -40%;
+    max-width: 100%;
+    margin: 40px 0 0;
   }
 
   .ai-video-image-screen {
@@ -3042,20 +3100,30 @@ body.ai-detail-mode .reveal.visible {
   .ai-user-insight {
     position: relative;
     inset: auto;
-    width: 150%;
+    width: 100%;
     height: auto;
-    max-width: none;
-    margin-left: -25%;
+    max-width: 100%;
+    margin-left: 0;
   }
 
   .demo-phone-stage {
-    min-height: 700px;
+    --demo-phone-scale: 0.76;
+    position: relative;
+    width: 100%;
+    height: 638px;
+    min-width: 0;
+    min-height: 0;
   }
 
   .demo-phone-frame {
-    transform: scale(0.82);
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 403px;
+    height: 840px;
+    margin: 0;
+    transform: translateX(-50%) scale(var(--demo-phone-scale));
     transform-origin: center top;
-    margin-bottom: -150px;
   }
 }
 
@@ -3065,23 +3133,41 @@ body.ai-detail-mode .reveal.visible {
   }
 
   .ai-user-insight {
-    width: 180%;
-    margin-left: -40%;
+    width: 100%;
+    margin-left: 0;
   }
 
   .ai-case-intro-image {
-    width: 180%;
-    margin-left: -40%;
+    width: 100%;
+    margin-left: 0;
   }
 
   .demo-phone-stage {
-    min-height: 610px;
+    --demo-phone-scale: 0.62;
+    height: 521px;
+    min-height: 0;
   }
 
   .demo-phone-frame {
-    transform: scale(0.7);
-    margin-bottom: -250px;
+    margin: 0;
   }
+
+  .ai-case-demo {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+}
+
+@media (max-width: 760px) {
+  .project-switcher,
+  .project-switcher-stage,
+  .project-switcher-deck {
+    max-width: calc(100vw - 24px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-phone-loader span { animation: none; }
 }
 
 .case-hero {
@@ -3294,6 +3380,16 @@ body.ai-detail-mode .reveal.visible {
   .project-visual {
     min-height: 380px;
     border-radius: 0 0 34px 34px;
+  }
+
+  /* Mobile cards stack vertically, so the visual starts with square top corners.
+     The desktop AI background asset includes a baked-in white top-right corner. */
+  .ai-project-visual {
+    background: linear-gradient(105deg, #b9ddff 0%, #cbd3ff 44%, #dfcaff 72%, #ffd2f5 100%);
+  }
+
+  .ai-project-visual .ai-visual-bg {
+    display: none;
   }
 
   .project-logo-wrap {

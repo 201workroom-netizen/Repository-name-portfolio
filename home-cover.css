@@ -641,7 +641,6 @@ body:has(.home-intro-sequence)::before {
 }
 
 .home-profile-description {
-  width: 43vw;
   margin: 34px 0 0;
   color: #6f6f6f;
   font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -660,7 +659,7 @@ body:has(.home-intro-sequence)::before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 8px;
   width: min(8.90625vw, 171px);
   min-width: 0;
   height: min(2.90625vw, 55.8px);
@@ -686,8 +685,8 @@ body:has(.home-intro-sequence)::before {
 }
 
 .home-profile-mail-icon {
-  width: 18px;
-  height: 14px;
+  width: 21.6px;
+  height: 16.8px;
   display: inline-block;
   object-fit: contain;
   vertical-align: middle;
@@ -696,8 +695,8 @@ body:has(.home-intro-sequence)::before {
 
 .home-profile-arrow {
   display: inline-block;
-  width: 18px;
-  height: 14px;
+  width: 21.6px;
+  height: 16.8px;
   object-fit: contain;
   vertical-align: middle;
   flex: 0 0 auto;

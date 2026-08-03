@@ -4,7 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI 搜索动效 Demo</title>
-    <script type="module" src="./assets/index-Ar09Jhcb.js"></script>
+    <script>
+      // The generated bundle's module-preload fallback observes `document`,
+      // which can fail in older iOS webviews before React mounts. This demo is
+      // a single bundle, so it is safe to skip that unnecessary fallback.
+      try {
+        const relList = document.createElement("link").relList;
+        if (!relList.supports || !relList.supports("modulepreload")) {
+          const nativeSupports = DOMTokenList.prototype.supports;
+          DOMTokenList.prototype.supports = function supports(token) {
+            if (token === "modulepreload") return true;
+            return nativeSupports ? nativeSupports.call(this, token) : false;
+          };
+        }
+      } catch (error) {}
+    </script>
     <link rel="stylesheet" href="./assets/index-CdB6gfmL.css">
     <style>
       .click-cue {
@@ -33,9 +47,58 @@
             0 0 18px rgba(255, 184, 0, 0.28);
         }
       }
+
+      @media (max-width: 430px) {
+        html,
+        body,
+        #root,
+        .app-shell {
+          width: 100%;
+          height: 100%;
+          min-height: 100%;
+          overflow: hidden;
+        }
+
+        .phone {
+          transform-origin: center top !important;
+        }
+      }
     </style>
   </head>
   <body>
     <div id="root"></div>
+    <script src="./assets/index-Ar09Jhcb.js"></script>
+    <script>
+      (() => {
+        const fitPhone = () => {
+          const phone = document.querySelector(".phone");
+          if (!phone || window.innerWidth >= 375) return;
+          phone.style.setProperty("transform", `scale(${window.innerWidth / 375})`, "important");
+          phone.style.setProperty("transform-origin", "center top", "important");
+        };
+
+        const notifyParent = () => {
+          const root = document.getElementById("root");
+          if (!root || !root.childElementCount) return false;
+          fitPhone();
+          window.parent.postMessage({ type: "ecommerce-demo-ready" }, "*");
+          return true;
+        };
+
+        let attempts = 0;
+        const waitForDemo = () => {
+          attempts += 1;
+          const ready = notifyParent();
+          // file:// parents cannot inspect iframe DOM. Repeat the ready signal
+          // briefly so it cannot be lost before the parent listener is attached.
+          if ((!ready || attempts < 30) && attempts < 80) {
+            window.setTimeout(waitForDemo, ready ? 160 : 100);
+          }
+        };
+        waitForDemo();
+
+        window.addEventListener("resize", fitPhone, { passive: true });
+      })();
+    </script>
   </body>
 </html>
