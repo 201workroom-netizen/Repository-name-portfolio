@@ -10,6 +10,129 @@
   --radius: 28px;
 }
 
+/* First entry: a transparent, frosted double curtain gives the full-resolution
+   artwork a brief head start without changing the page underneath. */
+.page-ready-loader {
+  position: fixed;
+  z-index: 6000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #141414;
+  background: transparent;
+  isolation: isolate;
+  pointer-events: auto;
+}
+
+.is-page-preparing,
+.is-page-preparing body {
+  overflow: hidden;
+}
+
+.page-ready-loader-panel {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  bottom: 0;
+  width: calc(50% + 1px);
+  background: rgba(255, 255, 255, 0.68);
+  -webkit-backdrop-filter: blur(24px) saturate(128%);
+  backdrop-filter: blur(24px) saturate(128%);
+  transition: transform 880ms cubic-bezier(0.76, 0, 0.24, 1);
+  will-change: transform;
+}
+
+.page-ready-loader-panel-left {
+  left: 0;
+  border-right: 1px solid rgba(20, 20, 20, 0.055);
+}
+
+.page-ready-loader-panel-right {
+  right: 0;
+}
+
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .page-ready-loader-panel {
+    background: rgba(250, 250, 250, 0.94);
+  }
+}
+
+.page-ready-loader-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  text-align: center;
+  transform: translateY(-1vh);
+  transition:
+    opacity 220ms ease,
+    filter 220ms ease,
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.page-ready-loader-progress {
+  min-width: 3ch;
+  font-family: Inter, "PingFang SC", system-ui, sans-serif;
+  font-size: clamp(72px, 8vw, 96px);
+  font-variant-numeric: tabular-nums;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 0.88;
+}
+
+.page-ready-loader-label {
+  color: rgba(20, 20, 20, 0.5);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+.page-ready-loader.is-ready {
+  pointer-events: none;
+}
+
+.page-ready-loader.is-ready .page-ready-loader-inner {
+  opacity: 0;
+  filter: blur(7px);
+  transform: translateY(-1vh) scale(0.97);
+}
+
+.page-ready-loader.is-ready .page-ready-loader-panel-left {
+  transform: translate3d(-101%, 0, 0);
+}
+
+.page-ready-loader.is-ready .page-ready-loader-panel-right {
+  transform: translate3d(101%, 0, 0);
+}
+
+@media (max-width: 600px) {
+  .page-ready-loader-panel {
+    -webkit-backdrop-filter: blur(18px) saturate(122%);
+    backdrop-filter: blur(18px) saturate(122%);
+  }
+
+  .page-ready-loader-inner {
+    gap: 12px;
+  }
+
+  .page-ready-loader-progress {
+    font-size: clamp(64px, 22vw, 84px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-ready-loader-panel {
+    transition-duration: 180ms;
+  }
+
+  .page-ready-loader-inner {
+    transition-duration: 120ms;
+  }
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -2759,41 +2882,35 @@ body.ai-detail-mode .reveal.visible {
   box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.35);
 }
 
-.demo-phone-loader {
+.demo-phone-poster {
   position: absolute;
   inset: 13px;
   z-index: 2;
-  display: grid;
-  place-content: center;
-  justify-items: center;
-  gap: 12px;
+  display: block;
+  width: 375px;
+  height: 812px;
   border-radius: 36px;
-  background: #f3f4f4;
-  color: rgba(17, 17, 17, 0.48);
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  transition: opacity 240ms ease, visibility 0s linear 240ms;
+  object-fit: cover;
+  pointer-events: none;
+  transition: opacity 280ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 280ms;
 }
 
-.demo-phone-loader span {
-  width: 22px;
-  height: 22px;
-  border: 2px solid rgba(17, 17, 17, 0.1);
-  border-top-color: rgba(93, 81, 254, 0.72);
-  border-radius: 50%;
-  animation: demo-loader-spin 800ms linear infinite;
+.demo-phone-loader {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-.demo-phone-frame[data-demo-status="ready"] .demo-phone-loader {
+.demo-phone-frame[data-demo-status="ready"] .demo-phone-poster {
   visibility: hidden;
   opacity: 0;
 }
-
-.demo-phone-frame[data-demo-status="slow"] .demo-phone-loader p::after {
-  content: "，请稍候";
-}
-
-@keyframes demo-loader-spin { to { transform: rotate(360deg); } }
 
 @media (max-height: 960px) and (min-width: 901px) {
   .demo-phone-stage {
@@ -3167,7 +3284,7 @@ body.ai-detail-mode .reveal.visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .demo-phone-loader span { animation: none; }
+  .demo-phone-poster { transition-duration: 120ms; }
 }
 
 .case-hero {

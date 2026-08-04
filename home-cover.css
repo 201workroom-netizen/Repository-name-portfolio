@@ -401,6 +401,21 @@ body.dark-mode .site-shell:has(.home-figma-cover) .topbar.is-nav-scrolled .nav-l
     line-height: 1;
   }
 
+  /* 首屏展开态以文字而非三等分格子定位，使“首页 / 关于”贴齐英文标题两端。 */
+  .site-shell:has(.home-figma-cover) .topbar:not(.is-nav-scrolled) .nav-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0;
+  }
+
+  .site-shell:has(.home-figma-cover) .topbar:not(.is-nav-scrolled) .nav-links a,
+  .site-shell:has(.home-figma-cover) .topbar:not(.is-nav-scrolled) .nav-links a.is-active {
+    width: auto;
+    flex: 0 0 auto;
+    padding: 0;
+  }
+
   .home-figma-cover {
     display: flex;
     flex-direction: column;

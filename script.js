@@ -178,15 +178,6 @@ function projectLogoMarkup(project) {
   `;
 }
 
-function deferMobileImages(markup) {
-  if (!window.matchMedia("(max-width: 900px)").matches) return markup;
-  return markup.replace(/<img\b[^>]*>/g, (tag) => {
-    // 这四张长图依赖图片本身撑开版面，保留原生懒加载，避免出现高度跳变。
-    if (!tag.includes('loading="lazy"') || /ai-video-screen-0[45]|ai-console-screen-0[12]/.test(tag)) return tag;
-    return tag.replace(/\ssrc=(['"])(.*?)\1/, " data-src=$1$2$1");
-  });
-}
-
 function landingPage() {
   const homeProjects = projects.filter((project) => project.id !== "console");
   return `
@@ -213,7 +204,7 @@ function landingPage() {
         </div>
       </div>
       <figure class="home-profile-photo">
-        <img src="./assets/yanan-profile-20260723b.webp" alt="王雅楠个人照片" loading="lazy" decoding="async" />
+        <img src="./assets/yanan-profile-20260723b.webp" alt="王雅楠个人照片" loading="eager" fetchpriority="high" decoding="async" />
         <figcaption>体验设计</figcaption>
       </figure>
       </section>
@@ -831,12 +822,20 @@ function aiSearchDetailPage() {
           <h2>电商DEMO展示</h2>
         </header>
         <div class="demo-phone-stage reveal" style="--delay:100ms">
-          <div class="demo-phone-frame" data-demo-status="loading">
-            <div class="demo-phone-loader" role="status" aria-live="polite">
-              <span aria-hidden="true"></span>
-              <p>Demo 加载中</p>
-            </div>
-            <iframe src="./ecommerce-demo/index.html?v=20260803g" title="AI 电商搜索交互 Demo" loading="eager"></iframe>
+          <div class="demo-phone-frame" data-demo-status="loading" aria-busy="true">
+            <img
+              class="demo-phone-poster"
+              src="./ecommerce-demo/assets/demo-first-frame.webp"
+              alt=""
+              width="375"
+              height="812"
+              loading="eager"
+              decoding="sync"
+              fetchpriority="high"
+              aria-hidden="true"
+            />
+            <p class="demo-phone-loader" role="status" aria-live="polite">Demo 正在后台准备</p>
+            <iframe src="./ecommerce-demo/index.html?v=20260804a" title="AI 电商搜索交互 Demo" loading="eager" fetchpriority="high"></iframe>
           </div>
         </div>
       </section>
@@ -876,6 +875,65 @@ function setupReveal() {
 }
 
 let deferredMediaController = null;
+let retinaArtworkController = null;
+let initialPageReady = false;
+
+const retinaArtworkPattern = /(?:assets\/(?:meituan(?:-lottery|-follow|-spec)?|gofun|integrated)\/screen-\d+@2x|assets\/(?:ai-detail-intro|ai-search-hero-figma|ai-search-commerce-assistant|ai-user-insight|ai-intent-classification@2x|ai-video-(?:hero|screen-\d+)@2x|ai-console-screen-\d+@2x|ai-cover-background|ai-phone-(?:commerce|content)-v2|meituan-phone-(?:ranking|lottery)-v2|project-(?:ai|meituan|gofun|integrated)-cover))\.webp$/;
+
+function highQualityArtworkSource(source) {
+  const cleanSource = source.split("?")[0];
+  if (cleanSource.endsWith("yanan-profile-20260723b.webp")) return cleanSource.replace(/\.webp$/, ".jpg");
+  return retinaArtworkPattern.test(cleanSource) ? cleanSource.replace(/\.webp$/, ".png") : source;
+}
+
+function setupRetinaArtwork() {
+  retinaArtworkController?.abort();
+  const controller = new AbortController();
+  retinaArtworkController = controller;
+  const images = [...document.querySelectorAll('img[src$=".webp"], img[src*=".webp?"]')];
+  const upgrade = (image) => {
+    const source = image.getAttribute("src");
+    const highQualitySource = highQualityArtworkSource(source);
+    if (highQualitySource === source) return;
+    image.srcset = `${source} 1x, ${highQualitySource} 2x`;
+  };
+
+  if (!("IntersectionObserver" in window)) {
+    images.forEach(upgrade);
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      upgrade(entry.target);
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: "700px 0px" });
+
+  images.forEach((image) => {
+    if (image.loading === "eager") upgrade(image);
+    else observer.observe(image);
+  });
+  controller.signal.addEventListener("abort", () => observer.disconnect(), { once: true });
+}
+
+function prefetchCommerceDemo() {
+  [
+    ["./ecommerce-demo/index.html?v=20260804a", "document"],
+    ["./ecommerce-demo/assets/index-CdB6gfmL.css", "style"],
+    ["./ecommerce-demo/assets/index-Ar09Jhcb.js", "script"],
+    ["./ecommerce-demo/assets/demo-first-frame.webp", "image"],
+  ].forEach(([href, as]) => {
+    if (document.head.querySelector(`link[data-demo-prefetch="${as}"]`)) return;
+    const link = document.createElement("link");
+    link.rel = "prefetch";
+    link.href = href;
+    link.as = as;
+    link.dataset.demoPrefetch = as;
+    document.head.appendChild(link);
+  });
+}
 
 function clearDeferredMediaLoading() {
   deferredMediaController?.abort();
@@ -887,13 +945,11 @@ function setupDeferredMediaLoading() {
 
   // 详情页会同时生成同项目组的所有内容。将循环视频延后到即将进入视口时再请求，
   // 避免它们与首屏图片、字体竞争移动网络带宽。
-  const images = [...document.querySelectorAll("img[data-src]")];
   const videos = [...document.querySelectorAll("video[data-deferred-video]")];
   document.querySelectorAll('img[loading="lazy"]').forEach((image) => {
     image.fetchPriority = "low";
   });
   if (!("IntersectionObserver" in window)) {
-    images.forEach((image) => { image.src = image.dataset.src; });
     videos.forEach((video) => {
       const source = video.querySelector("source[data-src]");
       if (source) source.src = source.dataset.src;
@@ -901,7 +957,7 @@ function setupDeferredMediaLoading() {
     });
     return;
   }
-  if (!images.length && !videos.length) return;
+  if (!videos.length) return;
 
   const controller = new AbortController();
   deferredMediaController = controller;
@@ -917,21 +973,97 @@ function setupDeferredMediaLoading() {
   };
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.target.matches("img")) {
-        if (!entry.isIntersecting) return;
-        entry.target.src = entry.target.dataset.src;
-        entry.target.removeAttribute("data-src");
-        observer.unobserve(entry.target);
-        return;
-      }
       if (entry.isIntersecting) hydrate(entry.target);
       else entry.target.pause();
     });
   }, { rootMargin: "900px 0px" });
 
-  images.forEach((image) => observer.observe(image));
   videos.forEach((video) => observer.observe(video));
   controller.signal.addEventListener("abort", () => observer.disconnect(), { once: true });
+}
+
+function prepareInitialPage() {
+  if (initialPageReady) return;
+  initialPageReady = true;
+
+  const loader = document.querySelector(".page-ready-loader");
+  if (!loader) {
+    document.documentElement.classList.remove("is-page-preparing");
+    return;
+  }
+  const counter = loader.querySelector(".page-ready-loader-progress");
+  const hash = location.hash.replace("#", "");
+  const routeAssets = hash.startsWith("project/")
+    ? {
+        "ai-search": ["./assets/ai-search-hero-figma.webp", "./ecommerce-demo/assets/demo-first-frame.webp"],
+        "ai-video": ["./assets/ai-video-hero@2x.webp"],
+        console: ["./assets/ai-console-screen-01@2x.webp"],
+        "meituan-live": ["./assets/meituan/screen-01@2x.webp"],
+        gofun: ["./assets/gofun/screen-01@2x.webp"],
+        integrated: ["./assets/integrated/screen-01@2x.webp"],
+      }[hash.split("/")[1]] || []
+    : [
+        "./assets/yanan-profile-20260723b.webp",
+        "./assets/ai-cover-background.webp",
+        "./assets/ai-phone-commerce-v2.webp",
+        "./assets/ai-phone-content-v2.webp",
+        "./assets/meituan-phone-ranking-v2.webp",
+        "./assets/meituan-phone-lottery-v2.webp",
+      ];
+  const preloadAsset = (source) => new Promise((resolve) => {
+    const image = new Image();
+    image.fetchPriority = "high";
+    image.onload = () => Promise.resolve(image.decode ? image.decode().catch(() => {}) : undefined).then(resolve);
+    image.onerror = resolve;
+    image.src = window.devicePixelRatio >= 1.5 ? highQualityArtworkSource(source) : source;
+  });
+
+  const tasks = routeAssets.map(preloadAsset);
+  if (document.fonts?.ready) tasks.push(Promise.resolve(document.fonts.ready));
+  if ("requestIdleCallback" in window) window.requestIdleCallback(prefetchCommerceDemo, { timeout: 1200 });
+  else window.setTimeout(prefetchCommerceDemo, 500);
+
+  const startedAt = performance.now();
+  const minimumDuration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 180 : 1350;
+  const maximumDuration = 3200;
+  let completed = 0;
+  let displayed = 100;
+  let assetsSettled = tasks.length === 0;
+  let revealed = false;
+
+  const reveal = () => {
+    if (revealed) return;
+    revealed = true;
+    if (counter) counter.textContent = "01";
+    loader.classList.add("is-ready");
+    document.documentElement.classList.remove("is-page-preparing");
+    const panel = loader.querySelector(".page-ready-loader-panel-left");
+    const removeLoader = () => loader.remove();
+    panel?.addEventListener("transitionend", removeLoader, { once: true });
+    window.setTimeout(removeLoader, 1100);
+  };
+
+  const renderCounter = (now) => {
+    const elapsed = now - startedAt;
+    const timedRemaining = Math.max(1, 100 - Math.round((Math.min(elapsed, minimumDuration) / minimumDuration) * 99));
+    const assetRemaining = tasks.length ? Math.max(1, 100 - Math.round((completed / tasks.length) * 99)) : 1;
+    const target = Math.max(timedRemaining, assetRemaining);
+    displayed += (target - displayed) * 0.18;
+    if (Math.abs(displayed - target) < 0.45) displayed = target;
+    if (counter) counter.textContent = String(Math.max(1, Math.ceil(displayed))).padStart(2, "0");
+
+    if (assetsSettled && elapsed >= minimumDuration && displayed <= 1) {
+      reveal();
+      return;
+    }
+    window.requestAnimationFrame(renderCounter);
+  };
+
+  tasks.forEach((task) => task.finally(() => { completed += 1; }));
+  Promise.allSettled(tasks).then(() => { assetsSettled = true; });
+  // 弱网下仍要及时开放内容，其余高清图继续交给浏览器在后台完成。
+  window.setTimeout(() => { assetsSettled = true; }, maximumDuration);
+  window.requestAnimationFrame(renderCounter);
 }
 
 let dotFieldController = null;
@@ -1455,6 +1587,7 @@ function setupDemoFramePosition() {
   const markReady = () => {
     if (!shell || shell.dataset.demoStatus === "ready") return;
     shell.dataset.demoStatus = "ready";
+    shell.setAttribute("aria-busy", "false");
     window.clearTimeout(readyTimer);
     window.removeEventListener("message", handleMessage);
   };
@@ -1470,7 +1603,6 @@ function setupDemoFramePosition() {
         return;
       }
     } catch (error) {}
-    if (attempts === 12 && shell) shell.dataset.demoStatus = "slow";
     if (attempts < 50) readyTimer = window.setTimeout(checkReady, 160);
     else if (shell) {
       window.removeEventListener("message", handleMessage);
@@ -1557,7 +1689,9 @@ function setupHomepageNavMotion() {
     // Align the expanded navigation labels with the homepage project-card edges.
     const cardInset = Math.min(70, viewportWidth * 0.04);
     const expandedPadX = 55 * navScale;
-    const startInset = compact ? 20 : Math.max(0, (cardInset - expandedPadX) * 2);
+    // 手机首屏的首尾导航文字，与英文封面的左右视觉边界对齐。
+    // 收缩成胶囊后仍保留原有的 20px 安全边距。
+    const startInset = compact ? viewportWidth * 0.175 : Math.max(0, (cardInset - expandedPadX) * 2);
     const endInset = compact ? 20 : 24;
     const startWidth = Math.max(0, viewportWidth - startInset);
     const endWidth = Math.min(compact ? 344 : 376 * navScale, viewportWidth - endInset);
@@ -1692,6 +1826,8 @@ function render() {
   clearDemoStory();
   clearProjectSectionNav();
   clearDeferredMediaLoading();
+  retinaArtworkController?.abort();
+  retinaArtworkController = null;
   const hash = location.hash.replace("#", "");
   if (hash.startsWith("project/")) {
     const requestedProjectId = hash.split("/")[1];
@@ -1714,7 +1850,7 @@ function render() {
     document.body.style.setProperty("--dark-radius", "0vmax");
     document.documentElement.classList.add("is-project-transitioning");
     window.scrollTo(0, 0);
-    app.innerHTML = deferMobileImages(detailPage(projectId));
+    app.innerHTML = detailPage(projectId);
     window.scrollTo(0, 0);
     setupOpeningReveal();
     setupDemoFramePosition();
@@ -1724,7 +1860,7 @@ function render() {
   } else {
     document.body.classList.remove("ai-detail-mode");
     document.body.classList.remove("dark-mode");
-    app.innerHTML = deferMobileImages(landingPage());
+    app.innerHTML = landingPage();
     setupReveal();
     setupProjectNavState();
     setupCursorPills();
@@ -1740,7 +1876,9 @@ function render() {
   setupDotField();
   setupMagneticControls();
   setupScrollProgress();
+  setupRetinaArtwork();
   setupDeferredMediaLoading();
+  prepareInitialPage();
 }
 
 navToggle.addEventListener("click", () => {

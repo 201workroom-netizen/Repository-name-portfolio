@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="is-page-preparing">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -9,13 +9,21 @@
     />
     <title>王雅楠｜产品体验设计师作品集</title>
     <link rel="stylesheet" href="./fonts.css?v=20260728a" />
-    <link rel="stylesheet" href="./style.css?v=20260803m" />
-    <link rel="stylesheet" href="./home-cover.css?v=20260803d" />
+    <link rel="stylesheet" href="./style.css?v=20260804c" />
+    <link rel="stylesheet" href="./home-cover.css?v=20260804b" />
   </head>
   <body>
     <canvas class="dot-field" aria-hidden="true"></canvas>
     <div class="cursor-dot" aria-hidden="true"></div>
     <div class="scroll-progress" aria-hidden="true"></div>
+    <div class="page-ready-loader" role="status" aria-label="作品集资源加载中">
+      <span class="page-ready-loader-panel page-ready-loader-panel-left" aria-hidden="true"></span>
+      <span class="page-ready-loader-panel page-ready-loader-panel-right" aria-hidden="true"></span>
+      <div class="page-ready-loader-inner" aria-hidden="true">
+        <span class="page-ready-loader-progress">100</span>
+        <span class="page-ready-loader-label">Preparing Portfolio</span>
+      </div>
+    </div>
     <div class="site-shell">
       <header class="topbar">
         <a class="brand" href="#home" aria-label="Go to home">
@@ -40,6 +48,6 @@
       </footer>
     </div>
 
-  <script src="./script.js?v=20260803g"></script>
+  <script src="./script.js?v=20260804f"></script>
   </body>
 </html>
