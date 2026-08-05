@@ -10,8 +10,7 @@
   --radius: 28px;
 }
 
-/* First entry: a transparent, frosted double curtain gives the full-resolution
-   artwork a brief head start without changing the page underneath. */
+/* First entry: organic particle bloom, portrait focus with breathing rings, then one upward curtain. */
 .page-ready-loader {
   position: fixed;
   z-index: 6000;
@@ -19,10 +18,10 @@
   display: grid;
   place-items: center;
   overflow: hidden;
-  color: #141414;
-  background: transparent;
-  isolation: isolate;
+  background: #1d1d1d;
   pointer-events: auto;
+  transition: transform 650ms cubic-bezier(0.76, 0, 0.24, 1);
+  will-change: transform;
 }
 
 .is-page-preparing,
@@ -30,106 +29,238 @@
   overflow: hidden;
 }
 
-.page-ready-loader-panel {
+.page-ready-loader-particles,
+.page-ready-loader-portrait {
   position: absolute;
-  z-index: 0;
-  top: 0;
-  bottom: 0;
-  width: calc(50% + 1px);
-  background: rgba(255, 255, 255, 0.68);
-  -webkit-backdrop-filter: blur(24px) saturate(128%);
-  backdrop-filter: blur(24px) saturate(128%);
-  transition: transform 880ms cubic-bezier(0.76, 0, 0.24, 1);
-  will-change: transform;
+  left: 50%;
+  top: 50%;
+  width: 1px;
+  height: 1px;
+  transform: translate(-50%, -50%);
 }
 
-.page-ready-loader-panel-left {
+.page-ready-loader-particles span {
+  position: absolute;
   left: 0;
-  border-right: 1px solid rgba(20, 20, 20, 0.055);
+  top: 0;
+  width: var(--size);
+  height: var(--size);
+  margin: calc(var(--size) / -2);
+  border-radius: 50%;
+  background: #f5f5f5;
+  opacity: 0;
+  transform: translate(calc(var(--x) * 0.42), calc(var(--y) * 0.42)) scale(0.08);
+  animation: page-loader-particle 2300ms linear var(--delay) both;
+  will-change: transform, opacity;
 }
 
-.page-ready-loader-panel-right {
-  right: 0;
+.page-ready-loader-portrait {
+  width: clamp(72px, 8.1vw, 104px);
+  height: clamp(72px, 8.1vw, 104px);
+  overflow: visible;
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.12);
+  animation: page-loader-portrait 3500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, opacity;
 }
 
-@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  .page-ready-loader-panel {
-    background: rgba(250, 250, 250, 0.94);
-  }
+.page-ready-loader-portrait::before,
+.page-ready-loader-portrait::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: -1;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.48);
+  will-change: transform, opacity;
 }
 
-.page-ready-loader-inner {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  justify-items: center;
-  gap: 14px;
-  text-align: center;
-  transform: translateY(-1vh);
-  transition:
-    opacity 220ms ease,
-    filter 220ms ease,
-    transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+.page-ready-loader-portrait::before {
+  width: 182%;
+  height: 182%;
+  animation: page-loader-ring-inner 3500ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.page-ready-loader-progress {
-  min-width: 3ch;
-  font-family: Inter, "PingFang SC", system-ui, sans-serif;
-  font-size: clamp(72px, 8vw, 96px);
-  font-variant-numeric: tabular-nums;
-  font-weight: 300;
-  letter-spacing: -0.04em;
-  line-height: 0.88;
+.page-ready-loader-portrait::after {
+  width: 230%;
+  height: 230%;
+  border-color: rgba(255, 255, 255, 0.08);
+  animation: page-loader-ring-outer 3500ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.page-ready-loader-label {
-  color: rgba(20, 20, 20, 0.5);
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.17em;
-  text-transform: uppercase;
+.page-ready-loader-portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.44);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 7px rgba(255, 255, 255, 0.028),
+    0 12px 35px rgba(0, 0, 0, 0.2);
+}
+
+.page-ready-loader-portrait.is-shared-portrait {
+  position: fixed;
+  z-index: 6100;
+  animation: none;
+  opacity: 1;
+  transform: none;
+  transform-origin: left top;
+  will-change: transform, border-radius, opacity;
+}
+
+.page-ready-loader-portrait.is-shared-portrait::before,
+.page-ready-loader-portrait.is-shared-portrait::after {
+  animation: none;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1.04);
+  transition: opacity 220ms ease-out;
+}
+
+.page-ready-loader-portrait.is-shared-portrait img {
+  border-radius: inherit;
+}
+
+.home-profile-photo.is-awaiting-loader-portrait > img,
+.home-profile-photo.is-awaiting-loader-portrait > figcaption {
+  opacity: 0;
+}
+
+.home-profile-photo.is-awaiting-loader-portrait > img,
+.home-profile-photo.is-awaiting-loader-portrait > figcaption,
+.home-profile-photo.is-loader-photo-arriving > img,
+.home-profile-photo.is-loader-photo-arriving > figcaption {
+  transition: opacity 260ms ease-out;
+}
+
+.home-profile-photo.is-loader-photo-arriving > img,
+.home-profile-photo.is-loader-photo-arriving > figcaption {
+  opacity: 1;
 }
 
 .page-ready-loader.is-ready {
+  transform: translate3d(0, -101%, 0);
   pointer-events: none;
 }
 
-.page-ready-loader.is-ready .page-ready-loader-inner {
-  opacity: 0;
-  filter: blur(7px);
-  transform: translateY(-1vh) scale(0.97);
-}
-
-.page-ready-loader.is-ready .page-ready-loader-panel-left {
-  transform: translate3d(-101%, 0, 0);
-}
-
-.page-ready-loader.is-ready .page-ready-loader-panel-right {
-  transform: translate3d(101%, 0, 0);
-}
-
-@media (max-width: 600px) {
-  .page-ready-loader-panel {
-    -webkit-backdrop-filter: blur(18px) saturate(122%);
-    backdrop-filter: blur(18px) saturate(122%);
+@keyframes page-loader-particle {
+  0%, 6% {
+    opacity: 0;
+    transform: translate(calc(var(--x) * 0.42), calc(var(--y) * 0.42)) scale(0.08);
   }
-
-  .page-ready-loader-inner {
-    gap: 12px;
+  18% {
+    opacity: 0.16;
+    transform: translate(calc(var(--x) * 0.7), calc(var(--y) * 0.7)) scale(0.28);
   }
+  39% {
+    opacity: 1;
+    transform: translate(var(--x), var(--y)) scale(1);
+  }
+  55% {
+    opacity: 0.96;
+    transform: translate(calc(var(--x) * 1.04), calc(var(--y) * 1.04)) scale(1.08);
+  }
+  73% {
+    opacity: 0.92;
+    transform: translate(calc(var(--x) * 0.16), calc(var(--y) * 0.16)) scale(0.42);
+  }
+  83%, 100% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+}
 
-  .page-ready-loader-progress {
-    font-size: clamp(64px, 22vw, 84px);
+@keyframes page-loader-portrait {
+  0%, 64% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.12);
+  }
+  74% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes page-loader-ring-inner {
+  0%, 64% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.48);
+  }
+  75% {
+    opacity: 0.06;
+    transform: translate(-50%, -50%) scale(0.72);
+  }
+  86% {
+    opacity: 0.88;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  94% {
+    opacity: 0.42;
+    transform: translate(-50%, -50%) scale(1.035);
+  }
+  100% {
+    opacity: 0.66;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes page-loader-ring-outer {
+  0%, 67% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  79% {
+    opacity: 0.04;
+    transform: translate(-50%, -50%) scale(0.72);
+  }
+  89% {
+    opacity: 0.82;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  96% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(1.045);
+  }
+  100% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page-ready-loader-panel {
+  .page-ready-loader {
     transition-duration: 180ms;
   }
 
-  .page-ready-loader-inner {
-    transition-duration: 120ms;
+  .page-ready-loader-particles {
+    display: none;
+  }
+
+  .page-ready-loader-portrait {
+    animation: none;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .page-ready-loader-portrait::before,
+  .page-ready-loader-portrait::after {
+    animation: none;
+    opacity: 0.35;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .home-profile-photo.is-awaiting-loader-portrait > img,
+  .home-profile-photo.is-awaiting-loader-portrait > figcaption {
+    opacity: 1;
   }
 }
 

@@ -991,7 +991,6 @@ function prepareInitialPage() {
     document.documentElement.classList.remove("is-page-preparing");
     return;
   }
-  const counter = loader.querySelector(".page-ready-loader-progress");
   const hash = location.hash.replace("#", "");
   const routeAssets = hash.startsWith("project/")
     ? {
@@ -1024,46 +1023,123 @@ function prepareInitialPage() {
   else window.setTimeout(prefetchCommerceDemo, 500);
 
   const startedAt = performance.now();
-  const minimumDuration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 180 : 1350;
-  const maximumDuration = 3200;
-  let completed = 0;
-  let displayed = 100;
-  let assetsSettled = tasks.length === 0;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const minimumDuration = reduceMotion ? 180 : 3500;
+  const maximumDuration = 3500;
+  const portrait = loader.querySelector(".page-ready-loader-portrait");
+  const targetPhoto = (!hash || hash === "home") ? document.querySelector(".home-profile-photo") : null;
   let revealed = false;
+
+  if (!reduceMotion && portrait && targetPhoto) targetPhoto.classList.add("is-awaiting-loader-portrait");
+
+  const finishPageReveal = () => {
+    document.documentElement.classList.remove("is-page-preparing");
+    targetPhoto?.classList.remove("is-awaiting-loader-portrait", "is-loader-photo-arriving");
+    portrait?.remove();
+  };
+
+  const morphPortraitIntoPhoto = () => {
+    if (!portrait || !targetPhoto) {
+      finishPageReveal();
+      return;
+    }
+
+    const targetImage = targetPhoto.querySelector("img");
+    const targetRect = targetImage?.getBoundingClientRect();
+    const startRect = portrait.getBoundingClientRect();
+    if (!targetRect?.width || !targetRect?.height || !startRect.width || !startRect.height) {
+      finishPageReveal();
+      return;
+    }
+
+    const targetRadius = Number.parseFloat(getComputedStyle(targetImage).borderRadius) || 0;
+    portrait.style.left = `${targetRect.left}px`;
+    portrait.style.top = `${targetRect.top}px`;
+    portrait.style.width = `${targetRect.width}px`;
+    portrait.style.height = `${targetRect.height}px`;
+    portrait.style.borderRadius = `${targetRadius}px`;
+
+    const inverseX = startRect.left - targetRect.left;
+    const inverseY = startRect.top - targetRect.top;
+    const inverseScaleX = startRect.width / targetRect.width;
+    const inverseScaleY = startRect.height / targetRect.height;
+    const motion = portrait.animate([
+      {
+        transform: `translate3d(${inverseX}px, ${inverseY}px, 0) scale(${inverseScaleX}, ${inverseScaleY})`,
+        borderRadius: "50%",
+        opacity: 1,
+      },
+      {
+        transform: `translate3d(${inverseX * 0.48}px, ${inverseY * 0.58 - 8}px, 0) scale(${inverseScaleX + (1 - inverseScaleX) * 0.48}, ${inverseScaleY + (1 - inverseScaleY) * 0.48})`,
+        borderRadius: "42%",
+        opacity: 1,
+        offset: 0.52,
+      },
+      {
+        transform: "translate3d(0, 0, 0) scale(1)",
+        borderRadius: `${targetRadius}px`,
+        opacity: 1,
+        offset: 0.82,
+      },
+      {
+        transform: "translate3d(0, 0, 0) scale(1)",
+        borderRadius: `${targetRadius}px`,
+        opacity: 0,
+      },
+    ], {
+      duration: 980,
+      easing: "cubic-bezier(0.76, 0, 0.24, 1)",
+      fill: "forwards",
+    });
+
+    window.setTimeout(() => targetPhoto.classList.add("is-loader-photo-arriving"), 720);
+    motion.finished.then(finishPageReveal).catch(finishPageReveal);
+    window.setTimeout(finishPageReveal, 1200);
+  };
 
   const reveal = () => {
     if (revealed) return;
     revealed = true;
-    if (counter) counter.textContent = "01";
-    loader.classList.add("is-ready");
-    document.documentElement.classList.remove("is-page-preparing");
-    const panel = loader.querySelector(".page-ready-loader-panel-left");
-    const removeLoader = () => loader.remove();
-    panel?.addEventListener("transitionend", removeLoader, { once: true });
-    window.setTimeout(removeLoader, 1100);
-  };
-
-  const renderCounter = (now) => {
-    const elapsed = now - startedAt;
-    const timedRemaining = Math.max(1, 100 - Math.round((Math.min(elapsed, minimumDuration) / minimumDuration) * 99));
-    const assetRemaining = tasks.length ? Math.max(1, 100 - Math.round((completed / tasks.length) * 99)) : 1;
-    const target = Math.max(timedRemaining, assetRemaining);
-    displayed += (target - displayed) * 0.18;
-    if (Math.abs(displayed - target) < 0.45) displayed = target;
-    if (counter) counter.textContent = String(Math.max(1, Math.ceil(displayed))).padStart(2, "0");
-
-    if (assetsSettled && elapsed >= minimumDuration && displayed <= 1) {
-      reveal();
+    if (reduceMotion || !portrait || !targetPhoto) {
+      loader.classList.add("is-ready");
+      const removeLoader = () => {
+        loader.remove();
+        finishPageReveal();
+      };
+      loader.addEventListener("transitionend", removeLoader, { once: true });
+      window.setTimeout(removeLoader, 850);
       return;
     }
-    window.requestAnimationFrame(renderCounter);
+
+    const portraitRect = portrait.getBoundingClientRect();
+    portrait.classList.add("is-shared-portrait");
+    portrait.style.left = `${portraitRect.left}px`;
+    portrait.style.top = `${portraitRect.top}px`;
+    portrait.style.width = `${portraitRect.width}px`;
+    portrait.style.height = `${portraitRect.height}px`;
+    document.body.appendChild(portrait);
+    loader.classList.add("is-ready");
+
+    let lifted = false;
+    const liftComplete = () => {
+      if (lifted) return;
+      lifted = true;
+      loader.remove();
+      morphPortraitIntoPhoto();
+    };
+    loader.addEventListener("transitionend", liftComplete, { once: true });
+    window.setTimeout(liftComplete, 780);
   };
 
-  tasks.forEach((task) => task.finally(() => { completed += 1; }));
-  Promise.allSettled(tasks).then(() => { assetsSettled = true; });
-  // 弱网下仍要及时开放内容，其余高清图继续交给浏览器在后台完成。
-  window.setTimeout(() => { assetsSettled = true; }, maximumDuration);
-  window.requestAnimationFrame(renderCounter);
+  const revealWhenReady = () => {
+    const remaining = Math.max(0, minimumDuration - (performance.now() - startedAt));
+    window.setTimeout(reveal, remaining);
+  };
+
+  Promise.race([
+    Promise.allSettled(tasks),
+    new Promise((resolve) => window.setTimeout(resolve, maximumDuration)),
+  ]).then(revealWhenReady);
 }
 
 let dotFieldController = null;
